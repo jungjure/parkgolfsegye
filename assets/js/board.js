@@ -37,7 +37,7 @@
     sb.from('posts').select('*').eq('id', pid).maybeSingle().then(function(r){
       var p = r.data;
       if (!p) { pb.innerHTML = '<p class="muted">글을 찾을 수 없습니다.</p>'; return; }
-      sb.rpc('post_view', { pid: p.id });
+      sb.rpc('post_view', { pid: p.id }).then(function(){});
       Promise.all([PGS.nicks([p.author_id]), PGS.me()]).then(function(res){
         var nk = res[0], me = res[1] || {}, mine = me.user && me.user.id === p.author_id, admin = me.profile && me.profile.role === 'admin';
         document.title = p.title + ' - 파크골프세계';
