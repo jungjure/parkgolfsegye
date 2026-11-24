@@ -1,8 +1,10 @@
 # supabase
 
+Supabase 프로젝트: parkgolfsegye (서울, ap-northeast-2), 주소 https://rzteighnvqroxuqqwhov.supabase.co
+
 파크골프세계 데이터베이스 설계도입니다.
 
-1. Supabase > SQL Editor 에서 migrations 폴더의 파일을 001 -> 002 -> 003 순서로 실행합니다.
+1. Supabase > SQL Editor 에서 migrations 폴더의 파일을 001 -> 002 -> 003 -> 004 순서로 실행합니다.
 2. 필요하면 seed.sql 로 구장 목록 등을 넣습니다.
 3. 첫 관리자 지정: 가입 후 SQL Editor 에서
    update public.profiles set role = 'admin' where id = (select id from auth.users where email = '관리자 이메일');
