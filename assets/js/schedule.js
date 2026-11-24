@@ -50,6 +50,7 @@
 
   function placeLinks(e){
     if (!e.place) return '';
+    if (/온라인|전화 ?접수|홈페이지|중국|일본|태국|베트남|하이난|웨이하이|오키나와|해외/.test(e.place)) return '<div class="ev-place">' + esc(e.place) + '</div>';
     var base = root + 'place.html?n=' + encodeURIComponent(e.place);
     return '<div class="ev-place">' + esc(e.place)
       + ' <a class="mapbtn nv" href="' + base + '&go=naver">네이버</a>'
