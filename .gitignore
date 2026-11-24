@@ -1,0 +1,13 @@
+# 비밀 정보 (절대 올리지 않음)
+.env
+.env.*
+*.key
+
+# Supabase CLI 임시 파일
+supabase/.temp/
+supabase/.branches/
+
+# 기타
+node_modules/
+.DS_Store
+Thumbs.db
