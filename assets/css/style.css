@@ -185,3 +185,22 @@ a.ev.jn:hover .ev-title{color:var(--main)}
 .talk-in{display:flex;gap:8px;border-top:1px solid var(--line);padding:10px}
 .talk-in textarea{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;resize:none}
 @media (max-width:640px){ .board-top .btn{width:100%;text-align:center} .talk{height:70vh} }
+
+/* ---- 관리자 ---- */
+.adm-tabs button{position:relative}
+.badge{display:inline-block;min-width:0;margin-left:4px;font-size:12px;color:#fff;background:#c0392b;border-radius:999px;padding:0 6px}
+.badge:empty{display:none}
+.adm-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:0 0 14px}
+.adm-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;color:var(--text)}
+.adm-card b{font-size:28px;color:var(--main)}
+.adm-card.warn{border-color:#d9822b}
+.adm-card.warn b{color:#d9822b}
+.adm-post h3{margin:8px 0}
+.adm-preview{max-height:260px;overflow:auto;background:var(--bg);border-radius:8px;padding:10px;font-size:15px}
+.adm-preview img{max-width:100%;border-radius:6px}
+.adm-search{flex:1;min-width:200px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit}
+.ev.mem strong{font-size:16px}
+.role-row{gap:4px;margin-top:4px}
+.role-row .small-btn{margin-left:0}
+.tag.rej{background:#c0392b}
+.rej-note{border-color:#c0392b;margin:0 0 12px}
