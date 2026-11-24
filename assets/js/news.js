@@ -60,6 +60,7 @@
   /* ---- 기사 보기 ---- */
   var art = document.getElementById('article');
   if (art) {
+    if (window.PGS_COMMENTS) PGS_COMMENTS('article', new URLSearchParams(location.search).get('id'));
     var id = new URLSearchParams(location.search).get('id');
     if (!id) { art.innerHTML = '<p class="muted">기사를 찾을 수 없습니다.</p>'; return; }
     sb.from('articles').select('*').eq('id', id).maybeSingle().then(function(r){
@@ -113,6 +114,7 @@
   var PLC = /(?<![가-힣A-Za-z0-9·])(?:([가-힣A-Za-z0-9·]{1,15})\s)?([가-힣A-Za-z0-9·]*(?:파크골프장|파크골프\s?구장|파크골프리조트|파크골프센터)(?:\s?제?\d{1,2}구장)?)/g;
   var STOP = /^(오는|지난|이번|이날|올해|내년|인근|주변|근처|전국|지역|해당|국내|모든|새|각|두|세|네|및|등|또는|이|그|저|신설|신규|대형|공공|기존|인접|무료|유료|전용|일반|대표|첫|다른|같은|한|또|총)$|(는|은|을|를|에서|에게|에|의|와|과|로|으로|던|된|한|인|이|가|도|만|서|고|며|면|게|다|요|일|월|시|분|명|개|회|차|부|곳|홀|번째|까지|부터)$|^\d/;
   var TEL = /(?<!\d)(0\d{1,2}-\d{3,4}-\d{4}|1[5-9]\d{2}-\d{4})(?!\d)/g;
+  window.PGS_LINKIFY = function(el){ linkify(el); };
   function linkify(el){
     var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null), nodes = [], n;
     while ((n = w.nextNode())) if (!n.parentElement.closest('a,script,style')) nodes.push(n);

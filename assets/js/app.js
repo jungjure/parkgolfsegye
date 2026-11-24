@@ -46,17 +46,35 @@
     });
   }
 
+  // 여러 화면에서 같이 쓰는 도구
+  var _me = null, _nick = {};
+  window.PGS = {
+    root: root, esc: esc,
+    me: function(){
+      if (!_me) _me = !window.sb ? Promise.resolve({}) : sb.auth.getUser().then(function(u){
+        var user = u.data && u.data.user;
+        if (!user) return {};
+        return sb.from('profiles').select('id,nickname,role').eq('id', user.id).maybeSingle().then(function(r){ return { user: user, profile: r.data || {} }; });
+      });
+      return _me;
+    },
+    nicks: function(ids){
+      var need = ids.filter(function(i){ return i && !(i in _nick); }).filter(function(v, i, a){ return a.indexOf(v) === i; });
+      if (!need.length || !window.sb) return Promise.resolve(_nick);
+      return sb.from('public_profiles').select('id,nickname').in('id', need).then(function(r){ (r.data || []).forEach(function(p){ _nick[p.id] = p.nickname; }); need.forEach(function(i){ if (!(i in _nick)) _nick[i] = '탈퇴한 회원'; }); return _nick; });
+    },
+    when: function(iso){
+      var d = new Date(new Date(iso).toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      var diff = (now - d) / 60000;
+      if (diff < 1) return '방금';
+      if (diff < 60) return Math.floor(diff) + '분 전';
+      if (diff < 1440 && d.getDate() === now.getDate()) return Math.floor(diff / 60) + '시간 전';
+      return d.getFullYear() + '.' + (d.getMonth()+1) + '.' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    },
+    text: function(s){ return esc(s).replace(/\n/g, '<br>'); }
+  };
+
   // 화면별 목록 불러오기 (Supabase 연결 뒤에 작동)
-  var body = document.getElementById('page-body');
-  function list(rows, href){
-    if (!rows || !rows.length) return '<p class="muted">아직 글이 없습니다.</p>';
-    return '<ul class="list">' + rows.map(function(r){ return '<li><a href="' + href(r) + '">' + esc(r.title) + '</a></li>'; }).join('') + '</ul>';
-  }
-  if (window.sb && body) {
-    if (page === 'column' || page === 'board') {
-      sb.from('posts').select('id,title,created_at').eq('board', page === 'column' ? 'column' : 'free').order('created_at', { ascending: false }).limit(30)
-        .then(function(r){ body.innerHTML = list(r.data, function(p){ return page + '.html?id=' + p.id; }); });
-    }
-  }
 
 })();
