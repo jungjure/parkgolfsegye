@@ -1,0 +1,5 @@
+-- 처음 넣을 데이터 (구장 목록 등)
+-- 좌표는 확인된 값만 넣습니다.
+-- 예)
+-- insert into public.venues (name, address, sido, sigungu, lat, lng)
+-- values ('구장 이름', '주소', '대전광역시', '유성구', 36.0000, 127.0000);
