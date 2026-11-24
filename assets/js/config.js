@@ -3,7 +3,7 @@
 //       여기에는 공개용 anon(public) 키만 넣습니다.
 window.PGS_CONFIG = {
   SITE_NAME: '파크골프세계',
-  SITE_URL: 'https://parkgolfsegye.com',
+  SITE_URL: 'https://parkgolfsegye.co.kr',
   SUPABASE_URL: 'https://rzteighnvqroxuqqwhov.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_DV2c-2cLZQN3gdBzCKzHpg_VHyTMCtc',  // 공개용 publishable 키 (공개돼도 되는 키)
   COMPANY: {
