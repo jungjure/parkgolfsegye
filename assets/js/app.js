@@ -45,21 +45,9 @@
     return '<ul class="list">' + rows.map(function(r){ return '<li><a href="' + href(r) + '">' + esc(r.title) + '</a></li>'; }).join('') + '</ul>';
   }
   if (window.sb && body) {
-    if (page === 'news') {
-      sb.from('articles').select('id,title,published_at').eq('is_published', true).order('published_at', { ascending: false }).limit(30)
-        .then(function(r){ body.innerHTML = list(r.data, function(a){ return 'article.html?id=' + a.id; }); });
-    }
     if (page === 'column' || page === 'board') {
       sb.from('posts').select('id,title,created_at').eq('board', page === 'column' ? 'column' : 'free').order('created_at', { ascending: false }).limit(30)
         .then(function(r){ body.innerHTML = list(r.data, function(p){ return page + '.html?id=' + p.id; }); });
-    }
-    if (page === 'article') {
-      var id = new URLSearchParams(location.search).get('id');
-      if (id) sb.from('articles').select('title,body_html,published_at').eq('id', id).single().then(function(r){
-        if (!r.data) { body.innerHTML = '<p class="muted">기사를 찾을 수 없습니다.</p>'; return; }
-        document.querySelector('h1').textContent = r.data.title;
-        body.innerHTML = r.data.body_html || '';
-      });
     }
   }
 
