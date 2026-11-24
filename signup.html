@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>회원가입 - 파크골프세계</title>
+<link rel="stylesheet" href="assets/css/style.css?v=20261124f">
+</head>
+<body data-page="signup" data-root="">
+<div id="site-header"></div>
+<main class="wrap">
+  <h1>회원가입</h1>
+  <form id="signup-form" class="card form" autocomplete="on">
+    <label>이메일 (로그인 아이디) <input type="email" name="email" required autocomplete="email"><small>가입 확인 메일이 이 주소로 갑니다.</small></label>
+    <label>별명 (글·댓글에 보임) <input name="nickname" maxlength="12" required><small>2~12자</small></label>
+    <label>비밀번호 <input type="password" name="password" required minlength="6" autocomplete="new-password"><small>6자 이상</small></label>
+    <label>비밀번호 확인 <input type="password" name="password2" required minlength="6" autocomplete="new-password"></label>
+    <label>휴대폰 번호 <input type="tel" name="phone" inputmode="numeric" maxlength="13" placeholder="010-1234-5678" required autocomplete="tel"><small>운영자 연락용 (관리자만 볼 수 있습니다)</small></label>
+    <label>지역 (시·도 → 시·군·구)<span class="row"><select name="rg1" required></select><select name="rg2" required disabled></select></span></label>
+    <fieldset><legend>파크골프 뉴스레터 받기 (선택)</legend>
+      <label class="chk"><input type="checkbox" name="nlE"> 이메일로 받기</label>
+      <label class="chk"><input type="checkbox" name="nlK"> 카카오톡으로 받기 (휴대폰 번호로)</label>
+      <small>동의하지 않아도 가입할 수 있고, 마이페이지에서 언제든 바꿀 수 있습니다.</small>
+    </fieldset>
+    <div class="terms"><b>개인정보 수집·이용 안내</b><br>수집 항목: 이메일, 별명, 비밀번호(암호화 저장), 휴대폰 번호, 지역(시·도, 시·군·구), 뉴스레터 수신 여부와 받는 방법(선택)<br>이용 목적: 회원 식별, 글·댓글 관리, 운영자 연락(공지·문의 응대), 뉴스레터 발송(받기에 동의한 분만)<br>보유 기간: 회원 탈퇴 때까지 (마이페이지에서 직접 탈퇴할 수 있습니다). 자세한 내용은 <a href="privacy.html">개인정보처리방침</a>을 확인해 주세요.</div>
+    <label class="chk"><input type="checkbox" name="agree" required> 개인정보 수집·이용에 동의합니다 (필수)</label>
+    <label class="chk"><input type="checkbox" name="age" required> 만 14세 이상입니다 (필수)</label>
+    <button type="submit" class="btn">가입하기</button>
+    <p id="signup-msg" class="form-msg"></p>
+    <div class="links"><a href="login.html">이미 회원이신가요? 로그인</a></div>
+  </form>
+</main>
+<div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js?v=20261124f"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/app.js?v=20261124f"></script>
+<script src="assets/js/regions.js?v=20261124f"></script>
+<script src="assets/js/member.js?v=20261124f"></script>
+</body>
+</html>
