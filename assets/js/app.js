@@ -5,6 +5,7 @@
   var page = document.body.getAttribute('data-page') || '';
   var MENU = [
     ['schedule','대회 일정','schedule.html'],
+    ['venues','구장 정보','venues.html'],
     ['news','뉴스','news.html'],
     ['column','독자칼럼','column.html'],
     ['board','자유게시판','board.html'],

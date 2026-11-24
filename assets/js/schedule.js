@@ -52,7 +52,9 @@
     if (!e.place) return '';
     if (/온라인|전화 ?접수|홈페이지|중국|일본|태국|베트남|하이난|웨이하이|오키나와|해외/.test(e.place)) return '<div class="ev-place">' + esc(e.place) + '</div>';
     var m = e.place.match(/^(.+?)\s*\((.+)\)\s*$/);
-    var base = root + 'place.html?n=' + encodeURIComponent(m ? m[1] : e.place) + (m ? '&a=' + encodeURIComponent(m[2]) : '');
+    var vv = venueOf(e.place);
+    var base = vv ? root + 'place.html?n=' + encodeURIComponent(vv.name) + '&lat=' + vv.lat + '&lng=' + vv.lng
+      : root + 'place.html?n=' + encodeURIComponent(m ? m[1] : e.place) + (m ? '&a=' + encodeURIComponent(m[2]) : '');
     return '<div class="ev-place">' + esc(e.place)
       + ' <a class="mapbtn nv" href="' + base + '&go=naver">네이버</a>'
       + '<a class="mapbtn kk" href="' + base + '&go=kakao">카카오</a></div>';
@@ -73,7 +75,14 @@
       + '</div>';
   }
 
-  var rows = [];
+  var rows = [], VEN = [];
+  // 구장 표의 좌표: 장소 글자에 구장 이름이 들어 있으면 그 좌표로 길안내
+  function norm(s){ return String(s || '').replace(/\s+/g, ''); }
+  function venueOf(place){
+    var p = norm(place), best = null;
+    VEN.forEach(function(v){ var n = norm(v.name); if (n.length >= 4 && p.indexOf(n) >= 0 && (!best || n.length > norm(best.name).length)) best = v; });
+    return best;
+  }
   function render(){
     var list = rows.filter(function(e){ return (!st.k || e.kind === st.k) && (!st.r || e.region === st.r); });
     var regions = [];
@@ -163,5 +172,5 @@
     else if (t.hasAttribute('data-r')) { st.r = t.getAttribute('data-r'); render(); }
   });
 
-  load();
+  sb.from('venues').select('name,lat,lng').not('lat', 'is', null).limit(2000).then(function(r){ VEN = r.data || []; load(); }, load);
 })();
