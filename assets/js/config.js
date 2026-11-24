@@ -4,8 +4,8 @@
 window.PGS_CONFIG = {
   SITE_NAME: '파크골프세계',
   SITE_URL: 'https://parkgolfsegye.com',
-  SUPABASE_URL: '',       // 예: https://abcdefgh.supabase.co
-  SUPABASE_ANON_KEY: '',  // Supabase > Project Settings > API > anon public 키
+  SUPABASE_URL: 'https://rzteighnvqroxuqqwhov.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_DV2c-2cLZQN3gdBzCKzHpg_VHyTMCtc',  // 공개용 publishable 키 (공개돼도 되는 키)
   COMPANY: {
     name: '파크골프세계 주식회사',
     ceo: '정지현',
