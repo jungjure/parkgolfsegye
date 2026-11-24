@@ -75,6 +75,31 @@
     text: function(s){ return esc(s).replace(/\n/g, '<br>'); }
   };
 
+  // 맨 위 공지 띠 (관리자 화면 > 설정에서 적으면 모든 화면에 보임)
+  if (window.sb && head) {
+    sb.from('site_settings').select('key,value').in('key', ['notice','notice_link']).then(function(r){
+      var s = {}; (r.data || []).forEach(function(x){ s[x.key] = x.value; });
+      if (!s.notice) return;
+      var t = esc(s.notice);
+      head.insertAdjacentHTML('afterbegin', '<div class="notice-bar">' + (s.notice_link ? '<a href="' + esc(s.notice_link) + '">' + t + '</a>' : t) + '</div>');
+    });
+  }
+
+  // 방문 기록 (통계용): IP·회원 번호는 남기지 않음. 브라우저에 임의의 방문자 값만 저장
+  if (window.sb && !/bot|crawl|spider|slurp|preview/i.test(navigator.userAgent)) {
+    try {
+      var vid = localStorage.getItem('pgs_vid');
+      if (!vid) { vid = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); localStorage.setItem('pgs_vid', vid); }
+      var ua = navigator.userAgent;
+      var dev = /iPad|Tablet/i.test(ua) ? '태블릿' : /Mobi|Android|iPhone/i.test(ua) ? '휴대폰' : 'PC';
+      var br = /KAKAOTALK/i.test(ua) ? '카카오톡' : /NAVER/i.test(ua) ? '네이버앱' : /SamsungBrowser/i.test(ua) ? '삼성인터넷' : /Edg\//.test(ua) ? '엣지' : /Chrome\//.test(ua) ? '크롬' : /Safari\//.test(ua) ? '사파리' : '기타';
+      var ref = document.referrer && document.referrer.indexOf(location.origin) !== 0 ? document.referrer : null;
+      setTimeout(function(){
+        sb.from('page_views').insert({ path: location.pathname + location.search, referrer: ref, visitor: vid, device: dev, browser: br, screen_w: screen.width, title: document.title }).then(function(){});
+      }, 1500);
+    } catch (e) {}
+  }
+
   // 화면별 목록 불러오기 (Supabase 연결 뒤에 작동)
 
 })();
