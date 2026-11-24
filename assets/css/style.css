@@ -204,3 +204,25 @@ a.ev.jn:hover .ev-title{color:var(--main)}
 .role-row .small-btn{margin-left:0}
 .tag.rej{background:#c0392b}
 .rej-note{border-color:#c0392b;margin:0 0 12px}
+
+.notice-bar{background:#fff4c2;color:#5a4a00;text-align:center;padding:8px 12px;font-size:14px;border-bottom:1px solid #f0dc8a}
+.notice-bar a{color:#5a4a00;text-decoration:underline}
+/* 관리자: 구장·통계·설정 */
+.pick-map{position:relative;height:320px;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:#e9eef0;touch-action:none;cursor:crosshair;user-select:none}
+.pick-map img{position:absolute;width:256px;height:256px;pointer-events:none}
+.pick-map .pm-pin{position:absolute;width:18px;height:18px;margin:-18px 0 0 -9px;background:#c0392b;border:2px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 1px 4px rgba(0,0,0,.4);pointer-events:none}
+.pick-map .pm-zoom{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:4px;z-index:2}
+.pick-map .pm-zoom button{width:32px;height:32px;border:1px solid var(--line);background:#fff;border-radius:6px;font-size:18px;cursor:pointer}
+.pick-map .pm-attr{position:absolute;right:0;bottom:0;background:rgba(255,255,255,.8);font-size:11px;padding:1px 4px;z-index:2}
+.vrow{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0}
+.vrow:last-child{border-bottom:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:160px;padding:6px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.bars .bar{flex:1;min-width:10px;background:var(--main);border-radius:3px 3px 0 0;position:relative}
+.bars .bar span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:10px;color:var(--sub)}
+.bar-labels{display:flex;gap:3px;font-size:10px;color:var(--sub);overflow-x:auto}
+.bar-labels span{flex:1;min-width:10px;text-align:center}
+.stat-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.stat-tbl td,.stat-tbl th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
+.stat-tbl td.n{text-align:right;white-space:nowrap}
+@media (max-width:640px){ .grid2{grid-template-columns:1fr} }
