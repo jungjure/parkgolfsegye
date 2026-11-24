@@ -23,11 +23,13 @@
 
   var co = C.COMPANY || {};
   var foot = document.getElementById('site-footer');
+  function fi(k, v){ return v ? '<span class="fi"><b>' + k + '</b> ' + esc(v) + '</span>' : ''; }
   if (foot) foot.innerHTML = '<footer class="site-footer"><div class="inner">'
-    + esc(co.name) + ' | 대표 ' + esc(co.ceo) + ' | ' + esc(co.address) + '<br>'
-    + '전화 ' + esc(co.tel) + ' | 팩스 ' + esc(co.fax) + ' | ' + esc(co.email) + '<br>'
-    + '사업자등록번호 ' + esc(co.bizNo) + ' | 인터넷신문 등록번호 ' + esc(co.pressNo) + '<br>'
-    + '<a href="' + root + 'privacy.html"><b>개인정보처리방침</b></a>'
+    + '<div class="frow">' + fi('명칭', co.name) + fi('주사무소', co.office) + fi('전화', co.tel) + '</div>'
+    + '<div class="frow">' + fi('등록번호', co.pressNo) + fi('등록연월일', co.pressDate) + fi('제호', co.title) + fi('발행인', co.publisher) + fi('편집인', co.editor) + fi('청소년보호책임자', co.youthOfficer) + '</div>'
+    + '<div class="frow">' + fi('발행소', co.pubOffice) + fi('발행연월일', co.pubDate) + '</div>'
+    + '<div class="frow">' + fi('대표이사', co.ceo) + fi('사업자등록번호', co.bizNo) + fi('팩스', co.fax) + fi('이메일', co.email) + '</div>'
+    + '<div class="frow"><a href="' + root + 'privacy.html"><b>개인정보처리방침</b></a><span class="fi">Copyright © 파크골프세계 주식회사. All rights reserved.</span></div>'
     + '</div></footer>';
 
   // 로그인 상태 표시: 로그인 전 = 로그인·회원가입, 로그인 후 = 별명·마이페이지·(관리자)·로그아웃
