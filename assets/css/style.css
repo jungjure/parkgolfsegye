@@ -126,3 +126,13 @@ a.pgplace,a.pgtel{text-decoration:underline;text-decoration-style:dotted;text-un
 .policy h2{font-size:18px;margin:22px 0 8px}
 .policy table{border-collapse:collapse;width:100%;font-size:14px}
 .policy td,.policy th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+
+/* ---- 구장 ---- */
+.vn-search{margin:0 0 10px}
+.vn-search input{width:100%;max-width:420px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fff}
+.vn-meta{font-size:13px;color:var(--sub)}
+.vn details{font-size:14px}
+.vn summary{cursor:pointer;color:var(--main)}
+.fees{list-style:none;margin:6px 0;padding:0}
+.fees li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:3px 0}
+.fees li b{font-weight:600;text-align:right}
