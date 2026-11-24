@@ -37,7 +37,7 @@
       var r = await sb.auth.signInWithPassword({ email: f.email.value.trim(), password: f.password.value });
       if (r.error) return msg(m, errText(r.error));
       var next = q.get('next');
-      location.href = root + (next && /^[\w\-]+\.html(\?[\w=&%\-]*)?$/.test(next) ? next : 'index.html');
+      location.href = root + (next && /^(admin\/)?[\w\-]+\.html(\?[\w=&%\-]*)?$/.test(next) ? next : 'index.html');
     });
   }
 

@@ -19,7 +19,7 @@
           var h = '<div class="board-top"><p class="muted small">' + (board === 'column' ? '독자 여러분의 기고를 받습니다. 보내 주신 글은 편집부 확인 뒤 실립니다.' : '회원 누구나 자유롭게 글을 쓸 수 있습니다. 욕설·광고는 지워질 수 있습니다.') + '</p>'
             + '<a class="btn" href="' + (me.user ? root + 'write.html?b=' + board : loginUrl()) + '">' + (board === 'column' ? '기고하기' : '글쓰기') + '</a></div>';
           h += all.length ? '<ul class="posts">' + all.map(function(p){
-            return '<li><a href="' + root + 'post.html?id=' + p.id + '"><strong>' + (p.status === 'pending' ? '<span class="tag pend">승인 대기</span> ' : '') + esc(p.title)
+            return '<li><a href="' + root + 'post.html?id=' + p.id + '"><strong>' + (p.status === 'pending' ? '<span class="tag pend">승인 대기</span> ' : p.status === 'rejected' ? '<span class="tag rej">돌려받음</span> ' : '') + esc(p.title)
               + (cc[p.id] ? ' <span class="cc">[' + cc[p.id] + ']</span>' : '') + '</strong><span class="muted small">' + esc(nk[p.author_id] || '회원') + ' · ' + PGS.when(p.created_at) + ' · 조회 ' + p.views + '</span></a></li>';
           }).join('') + '</ul>' : '<p class="muted card">아직 글이 없습니다. 첫 글을 남겨 주세요.</p>';
           if (rows.length === size) h += '<p class="center"><button class="btn line" id="more">더 보기</button></p>';
@@ -43,7 +43,8 @@
         document.title = p.title + ' - 파크골프세계';
         document.querySelector('h1').textContent = p.title;
         var h = '<div class="art-meta"><a href="' + root + PAGE[p.board] + '" class="nw-cat">' + NAME[p.board] + '</a> ' + esc(nk[p.author_id] || '회원') + ' · ' + PGS.when(p.created_at) + ' · 조회 ' + (p.views + 1)
-          + (p.status === 'pending' ? ' · <span class="tag pend">승인 대기</span>' : '') + '</div>';
+          + (p.status === 'pending' ? ' · <span class="tag pend">승인 대기</span>' : p.status === 'rejected' ? ' · <span class="tag rej">돌려받음</span>' : '') + '</div>'
+          + (p.status === 'rejected' && (mine || admin) ? '<div class="card rej-note"><b>편집부에서 돌려보냈습니다.</b>' + (p.admin_note ? '<p>' + PGS.text(p.admin_note) + '</p>' : '') + '<p class="muted small">글을 고쳐 저장하면 다시 승인 대기로 올라갑니다.</p></div>' : '');
         h += '<div class="art-body" id="post-body">' + (p.image_url ? '<p><img src="' + esc(p.image_url) + '" alt=""></p>' : '') + PGS.text(p.body) + '</div>';
         h += '<div class="post-act">' + (mine || admin ? '<a class="btn line" href="' + root + 'write.html?id=' + p.id + '">고치기</a><button class="btn line" id="pdel">지우기</button>' : '')
           + (admin && p.status === 'pending' ? '<button class="btn" id="papprove">승인해서 싣기</button>' : '')
