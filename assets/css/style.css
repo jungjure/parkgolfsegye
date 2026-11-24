@@ -79,3 +79,28 @@ h1{font-size:24px;margin:8px 0 16px}
 .modal-x{position:absolute;right:10px;top:8px;border:0;background:none;font-size:26px;cursor:pointer;color:var(--sub)}
 .home-sec h2{font-size:20px;margin:24px 0 10px}
 @media (max-width:640px){ .evs{grid-template-columns:1fr} }
+
+/* ---- 뉴스 ---- */
+.center{text-align:center}
+.small{font-size:13px}
+.nws{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.nw a{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--text)}
+.nw a:hover strong{color:var(--main)}
+.nw-img{width:120px;height:90px;object-fit:cover;border-radius:8px;flex:0 0 auto;background:var(--bg)}
+.nw-txt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.nw-txt strong{font-size:17px;line-height:1.4}
+.nw-txt p{margin:0;color:var(--sub);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nw-cat{display:inline-block;font-size:12px;color:var(--main);border:1px solid var(--main);border-radius:4px;padding:0 6px;width:max-content}
+.nw-date{font-size:13px;color:var(--sub)}
+.art-meta{color:var(--sub);font-size:14px;margin:-6px 0 16px}
+.art-body{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;font-size:17px;line-height:1.8;overflow-wrap:anywhere}
+.art-body *{font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',sans-serif !important;max-width:100%}
+.art-body img{height:auto;border-radius:6px}
+.art-body table{border-collapse:collapse;display:block;overflow-x:auto}
+.art-body td,.art-body th{border:1px solid var(--line);padding:4px 8px}
+.art-frame{width:100%;border:0;min-height:400px;background:#fff;display:block}
+.art-imgs{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+.art-imgs img{width:100%;max-width:869px;border-radius:8px;border:1px solid var(--line)}
+.art-embed{width:100%;height:1400px;border:1px solid var(--line);border-radius:8px;background:#fff}
+a.pgplace,a.pgtel{text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+@media (max-width:640px){ .nw-img{width:88px;height:70px} .nw-txt strong{font-size:16px} .art-body{padding:14px;font-size:16px} .art-embed{height:1100px} }
