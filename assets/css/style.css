@@ -226,3 +226,11 @@ a.ev.jn:hover .ev-title{color:var(--main)}
 .stat-tbl td,.stat-tbl th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
 .stat-tbl td.n{text-align:right;white-space:nowrap}
 @media (max-width:640px){ .grid2{grid-template-columns:1fr} }
+
+/* 바닥글 게재 사항 */
+.site-footer .inner{line-height:1.7}
+.site-footer .frow{display:flex;flex-wrap:wrap;gap:2px 0}
+.site-footer .fi{white-space:nowrap}
+.site-footer .frow > *:not(:last-child)::after{content:"|";color:#ccc;margin:0 8px}
+.site-footer .fi b{font-weight:600;color:#555}
+@media (max-width:640px){ .site-footer .fi{white-space:normal} }
