@@ -18,7 +18,7 @@ window.PGS_CONFIG = {
     editor: '정지현',                                               // 편집인
     youthOfficer: '정지현',                                         // 청소년보호책임자
     pubOffice: '대전광역시 유성구 대학로 31(봉명동, 한진리조트) 803호', // 발행소
-    pubDate: '2026년 12월 1일',                                     // 발행연월일
+    pubDate: '2026년 11월 24일',                                     // 발행연월일
     ceo: '정지현',
     fax: '0504-326-2591',
     email: 'jungjure@gmail.com',
