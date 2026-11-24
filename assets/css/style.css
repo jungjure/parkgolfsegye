@@ -42,3 +42,37 @@ h1{font-size:24px;margin:8px 0 16px}
   .nav{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap}
   .nav a{white-space:nowrap}
 }
+
+/* ---- 일정 ---- */
+.sch-tabs,.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.sch-tabs button,.chips button,.sch-nav button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--text)}
+.sch-tabs button.on,.chips button.on{background:var(--main);border-color:var(--main);color:#fff}
+.reg-chips button{padding:4px 10px;font-size:14px}
+.sch-nav{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
+.sch-nav strong{font-size:18px}
+.sch-nav button{border-radius:8px;padding:4px 10px}
+.sch-nav .small{font-size:13px}
+.sec{font-size:17px;margin:20px 0 8px;border-left:4px solid var(--main);padding-left:8px}
+.sec span{font-size:14px;color:var(--sub);font-weight:400}
+.evs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.ev{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.ev-top{display:flex;align-items:center;gap:6px;font-size:13px}
+.tag{border-radius:4px;padding:1px 7px;color:#fff;background:var(--main);font-size:12px}
+.k-연습라운딩 .tag{background:#2f6fb5}
+.k-접수 .tag{background:#d9822b}
+.reg{color:var(--sub);border:1px solid var(--line);border-radius:4px;padding:0 6px;font-size:12px}
+.ev-date{margin-left:auto;color:var(--sub)}
+.ev-title{color:var(--text);font-weight:600;line-height:1.45}
+.ev-title:hover{color:var(--main)}
+.ev-place{font-size:14px;color:var(--sub);display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.mapbtn{font-size:12px;border-radius:4px;padding:1px 7px;margin-left:2px}
+.mapbtn.nv{background:#03c75a;color:#fff}
+.mapbtn.kk{background:#fee500;color:#191919}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal-box{background:#fff;border-radius:12px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:20px;position:relative}
+.modal-box h3{margin:8px 0 12px;font-size:19px;line-height:1.4}
+.modal-box p{margin:8px 0}
+.modal-box .detail{background:var(--bg);border-radius:8px;padding:10px;font-size:14px;white-space:normal}
+.modal-x{position:absolute;right:10px;top:8px;border:0;background:none;font-size:26px;cursor:pointer;color:var(--sub)}
+.home-sec h2{font-size:20px;margin:24px 0 10px}
+@media (max-width:640px){ .evs{grid-template-columns:1fr} }
