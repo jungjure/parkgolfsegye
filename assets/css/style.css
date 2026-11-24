@@ -38,8 +38,11 @@ h1{font-size:24px;margin:8px 0 16px}
 .site-footer{border-top:1px solid var(--line);background:#fff;color:var(--sub);font-size:13px}
 .site-footer .inner{max-width:1080px;margin:0 auto;padding:20px 16px}
 
+.user-box{margin-left:auto}
 @media (max-width:640px){
-  .nav{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap}
+  .site-header .inner{gap:8px 12px}
+  .nav{order:3;flex:0 0 100%;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
   .nav a{white-space:nowrap}
 }
 
