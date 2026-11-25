@@ -21,13 +21,13 @@ window.PGS_COMMENTS = function(type, id){
     });
   }
   function loadList(){
-    sb.from('comments').select('id,body,author_id,created_at,is_hidden').eq('target_type', type).eq('target_id', id).order('created_at').then(function(r){
+    sb.from('comments').select('id,body,author_id,author_name,created_at,is_hidden').eq('target_type', type).eq('target_id', id).order('created_at').then(function(r){
       var rows = r.data || [];
       PGS.nicks(rows.map(function(c){ return c.author_id; })).then(function(nk){
         document.getElementById('cmt-n').textContent = rows.filter(function(c){ return !c.is_hidden; }).length + '개';
         document.getElementById('cmt-list').innerHTML = rows.length ? rows.map(function(c){
           var mineC = me.user && c.author_id === me.user.id, admin = me.profile && me.profile.role === 'admin';
-          return '<li class="cmt' + (c.is_hidden ? ' hidden-c' : '') + '"><div class="cmt-top"><b>' + esc(nk[c.author_id] || '회원') + '</b><span class="muted small">' + PGS.when(c.created_at) + (c.is_hidden ? ' · 숨김' : '') + '</span>'
+          return '<li class="cmt' + (c.is_hidden ? ' hidden-c' : '') + '"><div class="cmt-top"><b>' + esc(c.author_name || nk[c.author_id] || '회원') + '</b><span class="muted small">' + PGS.when(c.created_at) + (c.is_hidden ? ' · 숨김' : '') + '</span>'
             + (mineC || admin ? '<span class="cmt-act">' + (admin ? '<button data-hide="' + c.id + '" data-v="' + (c.is_hidden ? '0' : '1') + '">' + (c.is_hidden ? '보이기' : '숨기기') + '</button>' : '') + '<button data-del="' + c.id + '">지우기</button></span>' : '')
             + '</div><div class="cmt-body">' + PGS.text(c.body) + '</div></li>';
         }).join('') : '<li class="muted small">첫 댓글을 남겨 주세요.</li>';

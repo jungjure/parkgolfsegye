@@ -48,7 +48,7 @@
         var pend = rows.filter(function(p){ return p.status === 'pending'; }), rej = rows.filter(function(p){ return p.status === 'rejected'; });
         var h = pend.length ? pend.map(function(p){
           return '<div class="card adm-post" data-id="' + p.id + '"><div class="ev-top"><span class="tag pend">승인 대기</span><span class="muted small">' + esc(nk[p.author_id]) + ' · ' + PGS.when(p.created_at) + '</span></div>'
-            + '<h3>' + esc(p.title) + '</h3><div class="adm-preview">' + (p.image_url ? '<img src="' + esc(p.image_url) + '" alt="">' : '') + PGS.text(p.body) + '</div>'
+            + '<h3>' + esc(p.title) + '</h3><div class="adm-preview">' + (p.image_url ? '<img src="' + esc(p.image_url) + '" alt="">' : '') + PGS.postHtml(p.body) + '</div>'
             + '<div class="post-act"><button class="btn" data-pub="' + p.id + '">싣기</button><button class="btn line" data-rej="' + p.id + '">돌려보내기</button><a class="btn line" href="' + root + 'post.html?id=' + p.id + '">글 화면에서 보기</a></div><div class="rej-box"></div></div>'; }).join('')
           : '<p class="card muted">승인을 기다리는 칼럼이 없습니다.</p>';
         if (rej.length) h += '<h2 class="sec">돌려보낸 칼럼 <span>' + rej.length + '건</span></h2><ul class="posts">' + rej.map(function(p){ return '<li><a href="' + root + 'post.html?id=' + p.id + '"><strong>' + esc(p.title) + '</strong><span class="muted small">' + esc(nk[p.author_id]) + ' · ' + PGS.when(p.created_at) + (p.admin_note ? ' · 사유: ' + esc(p.admin_note) : '') + '</span></a></li>'; }).join('') + '</ul>';
@@ -59,7 +59,7 @@
 
   /* 댓글 관리 */
   function comments(){
-    sb.from('comments').select('id,target_type,target_id,body,author_id,created_at,is_hidden').order('created_at', { ascending: false }).limit(100).then(async function(r){
+    sb.from('comments').select('id,target_type,target_id,body,author_id,author_name,created_at,is_hidden').order('created_at', { ascending: false }).limit(100).then(async function(r){
       var rows = r.data || [];
       var aIds = rows.filter(function(c){ return c.target_type === 'article'; }).map(function(c){ return c.target_id; });
       var pIds = rows.filter(function(c){ return c.target_type === 'post'; }).map(function(c){ return c.target_id; });
@@ -71,7 +71,7 @@
       (res[2].data || []).forEach(function(p){ T['post' + p.id] = p.title; });
       body().innerHTML = '<p class="muted small">최근 댓글 100개까지 보여 드립니다. 숨긴 댓글은 다른 사람에게 보이지 않습니다.</p>' + (rows.length ? '<ul class="cmts">' + rows.map(function(c){
         var href = root + (c.target_type === 'article' ? 'article.html' : 'post.html') + '?id=' + c.target_id;
-        return '<li class="cmt' + (c.is_hidden ? ' hidden-c' : '') + '"><div class="cmt-top"><b>' + esc(nk[c.author_id]) + '</b><span class="muted small">' + PGS.when(c.created_at) + (c.is_hidden ? ' · 숨김' : '') + '</span>'
+        return '<li class="cmt' + (c.is_hidden ? ' hidden-c' : '') + '"><div class="cmt-top"><b>' + esc(c.author_name || nk[c.author_id]) + '</b><span class="muted small">' + PGS.when(c.created_at) + (c.is_hidden ? ' · 숨김' : '') + '</span>'
           + '<span class="cmt-act"><button data-hide="' + c.id + '" data-v="' + (c.is_hidden ? '0' : '1') + '">' + (c.is_hidden ? '보이기' : '숨기기') + '</button><button data-cdel="' + c.id + '">지우기</button></span></div>'
           + '<div class="cmt-body">' + PGS.text(c.body) + '</div><a class="small" href="' + href + '">' + (c.target_type === 'article' ? '기사' : '게시글') + ': ' + esc(T[c.target_type + c.target_id] || '(지워진 글)') + '</a></li>'; }).join('') + '</ul>' : '<p class="card muted">아직 댓글이 없습니다.</p>');
     });

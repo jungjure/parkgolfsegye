@@ -128,7 +128,18 @@
       if (diff < 1440 && d.getDate() === now.getDate()) return Math.floor(diff / 60) + '시간 전';
       return d.getFullYear() + '.' + (d.getMonth()+1) + '.' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
     },
-    text: function(s){ return esc(s).replace(/\n/g, '<br>'); }
+    text: function(s){ return esc(s).replace(/\n/g, '<br>'); },
+    // 게시글 본문: [[img:https://…]] 줄은 그 자리에 사진, 나머지는 글
+    postImgs: function(s){ var o = [], re = /^\[\[img:(https:\/\/[^\]\s]+)\]\]\s*$/gm, m; while ((m = re.exec(s || ''))) o.push(m[1]); return o; },
+    postPlain: function(s){ return String(s || '').replace(/^\[\[img:[^\]]*\]\]\s*$/gm, ' ').replace(/\s+/g, ' ').trim(); },
+    postHtml: function(s){
+      return String(s || '').split(/^(\[\[img:https:\/\/[^\]\s]+\]\])\s*$/m).map(function(part){
+        var m = /^\[\[img:(https:\/\/[^\]\s]+)\]\]$/.exec(part);
+        if (m) return '<figure class="pimg"><img src="' + esc(m[1]) + '" alt="첨부 사진" loading="lazy"></figure>';
+        part = part.replace(/^\n+|\s+$/g, '');
+        return part ? '<div class="ptxt">' + esc(part).replace(/\n/g, '<br>') + '</div>' : '';
+      }).join('');
+    }
   };
 
   // 맨 위 공지 띠 (관리자 화면 > 설정에서 적으면 모든 화면에 보임)
