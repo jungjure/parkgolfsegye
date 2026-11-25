@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>길안내 · 파크골프세계</title>
+<meta name="description" content="파크골프 대회 일정 · 구장 정보 · 파크골프 소식">
+<meta property="og:site_name" content="파크골프세계">
+<meta property="og:type" content="website">
+<meta property="og:title" content="길안내 · 파크골프세계">
+<meta property="og:description" content="파크골프 대회 일정 · 구장 정보 · 파크골프 소식">
+<meta property="og:url" content="https://parkgolfsegye.co.kr/place.html">
+<meta property="og:image" content="https://parkgolfsegye.co.kr/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://tile.openstreetmap.org">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
@@ -42,7 +52,7 @@ h1{font-size:22px;font-weight:800;line-height:1.35;margin:4px 0 4px}
   <p class="msg" id="msg" style="display:none"></p>
   <p class="note" id="note"></p>
 </div>
-<script src="/assets/js/navi.js?v=20261124h"></script>
+<script src="/assets/js/navi.js?v=20261125s"></script>
 <script>
 /* 장소 길안내 (2026-11-16 새로 만듦. 사용자 지시 "장소를 누르면 네비게이션이 열리는 코드는 전체 다 지워주고 다시 만들자",
    "홈페이지와 휴대폰에서 기사나 뉴스레터에서 항상 장소를 누르면 네이버지도 카카오지도에서 자동차경로를 찾아 이동경로를 찾게해줘", "항상 장소를 부르면 그 장소값을 불러오게")
@@ -56,12 +66,12 @@ h1{font-size:22px;font-weight:800;line-height:1.35;margin:4px 0 4px}
    6) (2026-11-21 사용자 "장소를 네이버지도로 띄우면 현재위치만 나오는데 ... 항상 그 위치를 찾아갈수있도록") 좌표가 없으면 기기에 저장된 좌표(pgn_geo5:) -> 회원 서버 geo(최대 9초)로 찾음.
       a=(괄호 속 다른 이름)도 함께 찾고, 끝내 못 찾으면 다른 이름으로 검색한 화면을 엶. (이름 검색이 실패하면 네이버 지도가 현재 위치만 보여 주기 때문) */
 (function(){
-  var GEO='https://script.google.com/macros/s/AKfycby4zEPx3AB25E7x4peqc9UTlYsGgywDjew64Xh8Va7VhM4zMG8clQGM0eCUZIQqsW2tVg/exec';
+  var GEO='https://rzteighnvqroxuqqwhov.supabase.co/functions/v1/geo';
   var q=new URLSearchParams(location.search), ua=navigator.userAgent||'';
   var ios=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   var android=/Android/i.test(ua), phone=ios||android||/Mobile/i.test(ua), inKakao=phone&&/KAKAOTALK/i.test(ua);
   var P={n:(q.get('n')||'').trim()||'장소', a:(q.get('a')||'').trim(), lat:parseFloat(q.get('lat')), lng:parseFloat(q.get('lng')), id:q.get('id')||''};
-  var NM={naver:'네이버 지도',kakao:'카카오맵'}, APPNAME='parkgolfnews.org';
+  var NM={naver:'네이버 지도',kakao:'카카오맵'}, APPNAME='parkgolfsegye.co.kr';
   function $(i){return document.getElementById(i);}
   function msg(h){$('msg').innerHTML=h||'';$('msg').style.display=h?'':'none';}
   function has(){return isFinite(P.lat)&&isFinite(P.lng);}
