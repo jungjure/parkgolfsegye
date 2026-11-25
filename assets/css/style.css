@@ -313,3 +313,21 @@ body.embed main.wrap .talk+p{margin:6px 0 0;line-height:1.4}
 .post-body figure.pimg{margin:16px 0;text-align:center}
 .post-body figure.pimg img{max-width:100%;height:auto;border-radius:8px}
 @media (max-width:640px){ .pl-th{width:72px;height:72px} .pl-txt strong{font-size:16px} }
+
+/* ---- 공유 (카카오톡·밴드·주소 복사) ---- */
+.ptitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 16px}
+.ptitle h1{margin:0;min-width:0}
+.share{position:relative;flex:0 0 auto}
+.share-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;color:#0b4d32;border-radius:999px;padding:6px 14px;font-size:15px;font-weight:700;cursor:pointer;line-height:1.2}
+.share-btn:hover{border-color:#0b4d32}
+.share-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:60;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:6px;min-width:180px;display:flex;flex-direction:column}
+.share-menu[hidden]{display:none}
+.share-menu button{display:flex;align-items:center;gap:10px;border:0;background:none;padding:10px 12px;border-radius:8px;font-size:15.5px;color:var(--text);cursor:pointer;text-align:left}
+.share-menu button:hover{background:var(--bg)}
+.si{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-weight:800;font-size:14px;flex:0 0 auto}
+.si.kk{background:#fee500;color:#191919}
+.si.bd{background:#06c755;color:#fff;font-size:16px}
+.si.cp{background:#e8f3ed;color:#0b4d32}
+.pgs-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:rgba(20,20,20,.88);color:#fff;padding:10px 18px;border-radius:999px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9999;max-width:90vw;text-align:center}
+.pgs-toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:640px){ .share-btn{padding:5px 11px;font-size:14px} .ptitle h1{font-size:21px} }
