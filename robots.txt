@@ -1,4 +1,6 @@
 User-agent: *
-Allow: /
-Disallow: /admin/
-Sitemap: https://parkgolfsegye.co.kr/sitemap.xml
+Disallow: /
+# 2026-11-25 홈페이지 잠금 중 (관리자만 보기). 잠금을 풀 때 아래 원래 내용으로 되돌립니다.
+# Allow: /
+# Disallow: /admin/
+# Sitemap: https://parkgolfsegye.co.kr/sitemap.xml
