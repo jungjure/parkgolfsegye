@@ -297,8 +297,8 @@ body.embed main.wrap .talk+p{margin:6px 0 0;line-height:1.4}
 
 /* ---- 독자칼럼 목록·본문 (parkgolfnews.org 독자칼럼 옮김) ---- */
 .guide{background:#f1f8f3;border-color:#d6ebdd;font-size:15px;line-height:1.75;margin:0 0 12px}
-.guide>b{color:#0b4d32;margin-bottom:2px}
-.guide p{margin:4px 0}
+.guide>b{display:block;color:#0b4d32;margin-bottom:2px}
+.card.guide p{display:block;margin:4px 0}
 .board-top .adm-search{max-width:none}
 .posts li a{flex-direction:row;align-items:center;gap:14px}
 .pl-txt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
