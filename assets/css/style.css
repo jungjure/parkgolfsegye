@@ -294,3 +294,22 @@ body.embed #site-header,body.embed #site-footer,body.embed main.wrap>h1{display:
 body.embed main.wrap{max-width:none;padding:10px 10px 0}
 body.embed .talk{height:calc(100vh - 52px);min-height:300px}
 body.embed main.wrap .talk+p{margin:6px 0 0;line-height:1.4}
+
+/* ---- 독자칼럼 목록·본문 (parkgolfnews.org 독자칼럼 옮김) ---- */
+.guide{background:#f1f8f3;border-color:#d6ebdd;font-size:15px;line-height:1.75;margin:0 0 12px}
+.guide>b{color:#0b4d32;margin-bottom:2px}
+.guide p{margin:4px 0}
+.board-top .adm-search{max-width:none}
+.posts li a{flex-direction:row;align-items:center;gap:14px}
+.pl-txt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.pl-txt strong{font-size:17px;font-weight:600;line-height:1.45}
+.pl-ex{margin:0;color:var(--sub);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pl-th{position:relative;flex:0 0 auto;width:88px;height:88px;border-radius:8px;overflow:hidden;background:var(--bg)}
+.pl-th img{width:100%;height:100%;object-fit:cover;display:block}
+.pl-th em{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;font-style:normal;font-size:12px;font-weight:700;border-radius:999px;padding:1px 7px}
+.pl-empty{padding:14px}
+.post-body .ptxt{white-space:normal}
+.post-body .ptxt+.ptxt{margin-top:14px}
+.post-body figure.pimg{margin:16px 0;text-align:center}
+.post-body figure.pimg img{max-width:100%;height:auto;border-radius:8px}
+@media (max-width:640px){ .pl-th{width:72px;height:72px} .pl-txt strong{font-size:16px} }
