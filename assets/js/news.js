@@ -29,24 +29,26 @@
     var compact = listBox.getAttribute('data-compact') === '1';
     var size = compact ? 5 : 20;
     var q = new URLSearchParams(location.search);
-    var st = { c: compact ? '뉴스' : (q.get('c') || ''), n: 0, rows: [] };
+    var st = { c: compact ? '뉴스' : (q.get('c') || ''), q: compact ? '' : (q.get('q') || '').trim().slice(0, 40), n: 0, rows: [] };
     function load(more){
       if (!more) { st.n = 0; st.rows = []; }
       var qr = sb.from('articles').select('id,title,summary,category,published_at,cover_url')
         .eq('is_published', true).order('published_at', { ascending: false }).order('sort_no', { ascending: false })
         .range(st.n, st.n + size - 1);
       if (st.c) qr = qr.eq('category', st.c);
+      if (st.q) qr = qr.ilike('title', '%' + st.q.replace(/[%_\\]/g, function(c){ return '\\' + c; }) + '%');
       qr.then(function(r){
         if (r.error) { listBox.innerHTML = '<p class="muted">뉴스를 불러오지 못했습니다.</p>'; return; }
         st.rows = st.rows.concat(r.data || []); st.n += (r.data || []).length;
         var h = '';
         if (!compact) h += '<div class="chips">' + [''].concat(CATS).map(function(c){
           return '<button data-c="' + c + '"' + (st.c === c ? ' class="on"' : '') + '>' + (c || '전체') + '</button>'; }).join('') + '</div>';
+        if (st.q) h += '<p class="muted">\'' + esc(st.q) + '\' 검색 결과' + (st.rows.length ? '' : '가 없습니다') + ' · <a href="' + root + 'news.html">검색 지우기</a></p>';
         h += st.rows.length ? '<ul class="nws">' + st.rows.map(item).join('') + '</ul>' : '<p class="muted card">아직 글이 없습니다.</p>';
         if (!compact && (r.data || []).length === size) h += '<p class="center"><button class="btn line" data-more="1">더 보기</button></p>';
         if (compact) h += '<p><a class="btn line" href="' + root + 'news.html">뉴스 더 보기</a></p>';
         listBox.innerHTML = h;
-        if (!compact) history.replaceState(null, '', location.pathname + (st.c ? '?c=' + encodeURIComponent(st.c) : ''));
+        if (!compact) { var qs = []; if (st.c) qs.push('c=' + encodeURIComponent(st.c)); if (st.q) qs.push('q=' + encodeURIComponent(st.q)); history.replaceState(null, '', location.pathname + (qs.length ? '?' + qs.join('&') : '')); }
       });
     }
     listBox.addEventListener('click', function(e){
