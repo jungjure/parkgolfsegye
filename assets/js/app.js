@@ -35,7 +35,7 @@
     + '<div class="user-box" id="user-box"></div>'
     + '</div>'
     + '<div class="menu-info"><time>' + todayTxt + '</time>'
-    + '<a class="mi-x" href="https://band.us/@parkgolfnews1">네이버 밴드</a>'
+    + '<a class="mi-x" href="https://band.us/band/104861837">네이버 밴드</a>'
     + '<a class="mi-x" href="tel:' + String((C.COMPANY || {}).tel || '').replace(/[^0-9]/g, '') + '">' + esc((C.COMPANY || {}).tel || '') + '</a>'
     + '<form class="msearch" action="' + root + 'news.html" method="get" role="search"><input type="search" name="q" placeholder="기사 검색" aria-label="기사 검색어" maxlength="40" value="' + (page === 'news' ? esc(new URLSearchParams(location.search).get('q') || '') : '') + '">'
     + '<button type="submit" aria-label="검색"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button></form>'
@@ -151,6 +151,83 @@
       head.insertAdjacentHTML('afterbegin', '<div class="notice-bar">' + (s.notice_link ? '<a href="' + esc(s.notice_link) + '">' + t + '</a>' : t) + '</div>');
     });
   }
+
+
+  // 공유 (2026-11-25): 각 화면 제목 옆 [공유] → 카카오톡 공유 / 밴드 공유 / 주소 복사
+  var KAKAO_JS = '329814625fa8441db2871c2b10da8efa';
+  var SHARE_PAGES = /^(home|schedule|venues|news|article|column|board|post|join|talk|privacy)$/;
+  var SHARE_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+  var isPhone = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  function loadKakao(){
+    if (window.Kakao || document.getElementById('kakao-sdk')) return;
+    var s = document.createElement('script'); s.id = 'kakao-sdk'; s.async = true;
+    s.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js'; s.crossOrigin = 'anonymous';
+    s.onload = function(){ try { if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS); } catch (e) {} };
+    document.head.appendChild(s);
+  }
+  function shareInfo(){
+    var h1 = document.querySelector('main h1'), t = (h1 && h1.textContent.trim()) || document.title;
+    var title = (t === C.SITE_NAME || !t) ? C.SITE_NAME : t + ' - ' + C.SITE_NAME;
+    var md = document.querySelector('meta[name="description"]'), desc = '';
+    var body = document.querySelector('main #post-body, main #article .art-body, main .art-body');
+    if (body) desc = body.textContent.replace(/\s+/g, ' ').trim().slice(0, 90);
+    if (!desc && md) desc = md.content;
+    var im = document.querySelector('main #post-body img, main .art-body img, main .art-imgs img');
+    var img = im && /^https:/.test(im.src) ? im.src : (C.SITE_URL || location.origin) + '/assets/img/og.jpg';
+    return { title: title, desc: desc || '파크골프 대회 일정 · 구장 정보 · 파크골프 소식', img: img, url: location.href.split('#')[0] };
+  }
+  function toast(t){
+    var el = document.getElementById('pgs-toast');
+    if (!el) { el = document.createElement('div'); el.id = 'pgs-toast'; el.className = 'pgs-toast'; document.body.appendChild(el); }
+    el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(function(){ el.classList.remove('on'); }, 2200);
+  }
+  function copyUrl(u){
+    var done = function(){ toast('주소를 복사했습니다. 붙여 넣어 공유하세요.'); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(u).then(done, function(){ prompt('주소를 복사하세요', u); });
+    else prompt('주소를 복사하세요', u);
+  }
+  function shareKakao(){
+    var i = shareInfo();
+    if (!(window.Kakao && Kakao.isInitialized && Kakao.isInitialized() && Kakao.Share)) { loadKakao(); copyUrl(i.url); return; }
+    try {
+      Kakao.Share.sendDefault({ objectType: 'feed',
+        content: { title: i.title, description: i.desc, imageUrl: i.img, link: { mobileWebUrl: i.url, webUrl: i.url } },
+        buttons: [{ title: '자세히 보기', link: { mobileWebUrl: i.url, webUrl: i.url } }] });
+    } catch (e) { copyUrl(i.url); }
+  }
+  function shareBand(){
+    var i = shareInfo(), body = i.title + '\n' + i.url, route = location.host;
+    var web = 'https://band.us/plugin/share?body=' + encodeURIComponent(body) + '&route=' + encodeURIComponent(route);
+    if (isPhone && !/KAKAOTALK/i.test(navigator.userAgent)) {
+      var t0 = Date.now();
+      location.href = 'bandapp://create/post?text=' + encodeURIComponent(body) + '&route=' + encodeURIComponent(route);
+      setTimeout(function(){ if (!document.hidden && Date.now() - t0 < 2600) location.href = web; }, 1500);
+    } else if (isPhone) location.href = web;
+    else { var w = window.open(web, 'bandshare', 'width=480,height=640,resizable=yes,scrollbars=yes'); if (!w) location.href = web; }
+  }
+  function shareBox(){
+    if (EMBED || !SHARE_PAGES.test(page) || /\/admin\//.test(location.pathname)) return;
+    var h1 = document.querySelector('main h1'); if (!h1 || h1.parentNode.classList.contains('ptitle')) return;
+    var wrap = document.createElement('div'); wrap.className = 'ptitle';
+    h1.parentNode.insertBefore(wrap, h1); wrap.appendChild(h1);
+    wrap.insertAdjacentHTML('beforeend', '<div class="share"><button type="button" class="share-btn" aria-haspopup="true" aria-expanded="false">' + SHARE_SVG + '공유</button>'
+      + '<div class="share-menu" hidden><button type="button" data-sh="kakao"><span class="si kk">K</span>카카오톡 공유</button>'
+      + '<button type="button" data-sh="band"><span class="si bd">b</span>밴드 공유</button>'
+      + '<button type="button" data-sh="copy"><span class="si cp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>주소 복사</button></div></div>');
+    var btn = wrap.querySelector('.share-btn'), menu = wrap.querySelector('.share-menu');
+    function close(){ menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    btn.addEventListener('mouseenter', loadKakao); btn.addEventListener('touchstart', loadKakao, { passive: true });
+    btn.addEventListener('click', function(e){ e.stopPropagation(); loadKakao(); menu.hidden = !menu.hidden; btn.setAttribute('aria-expanded', String(!menu.hidden)); });
+    menu.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-sh]'); if (!b) return; close();
+      if (b.dataset.sh === 'kakao') shareKakao(); else if (b.dataset.sh === 'band') shareBand(); else copyUrl(shareInfo().url);
+    });
+    document.addEventListener('click', function(e){ if (!wrap.contains(e.target)) close(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+    setTimeout(loadKakao, 2500);
+  }
+  shareBox();
+  window.PGS_SHARE = { kakao: shareKakao, band: shareBand, copy: function(){ copyUrl(shareInfo().url); } };
 
   // 방문 기록 (통계용): IP·회원 번호는 남기지 않음. 브라우저에 임의의 방문자 값만 저장
   if (window.sb && !/bot|crawl|spider|slurp|preview/i.test(navigator.userAgent)) {

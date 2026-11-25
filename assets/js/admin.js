@@ -135,7 +135,7 @@
   box.addEventListener('input', function(e){ if (e.target.id === 'mq') drawMembers(e.target.value.trim()); if (e.target.id === 'vq2') { vst.k = e.target.value; drawVenues(); } });
 
   /* ---- 구장 ---- */
-  var GEO = 'https://script.google.com/macros/s/AKfycby4zEPx3AB25E7x4peqc9UTlYsGgywDjew64Xh8Va7VhM4zMG8clQGM0eCUZIQqsW2tVg/exec';
+  var GEO = 'https://rzteighnvqroxuqqwhov.supabase.co/functions/v1/geo';
   var SIDO = ['강원','경기','경남','경북','광주','대구','대전','부산','서울','세종','울산','인천','전남','전북','제주','충남','충북'];
   function geo(qs){ return fetch(GEO, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'geo', q: qs }) }).then(function(r){ return r.json(); }).catch(function(){ return {}; }); }
   // 지도에서 눌러 위치 고르기 (OpenStreetMap 지도 조각, 직접 그림)

@@ -19,12 +19,12 @@
   var ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var android = /Android/i.test(ua), phone = ios || android || /Mobile/i.test(ua);
   var inKakao = phone && /KAKAOTALK/i.test(ua);   // 카톡 안 브라우저: 여기서 앱을 열면 카톡이 장소(도착지)를 빼고 넘겨 앱에 현재 위치만 나옴
-  var GEO = 'https://script.google.com/macros/s/AKfycby4zEPx3AB25E7x4peqc9UTlYsGgywDjew64Xh8Va7VhM4zMG8clQGM0eCUZIQqsW2tVg/exec';
+  var GEO = 'https://rzteighnvqroxuqqwhov.supabase.co/functions/v1/geo';   // 파크골프세계 전용 좌표 서버 (2026-11-25, 옛 회원 서버 대신)
   var APPNAME = 'parkgolfsegye.co.kr';
   function parse(href) {
     try {
       var u = new URL(href, location.href);
-      if (!/(^|\.)(parkgolfsegye\.co\.kr|parkgolfnews\.org)$/.test(u.hostname) && u.hostname !== location.hostname) return null;
+      if (!/(^|\.)parkgolfsegye\.co\.kr$/.test(u.hostname) && u.hostname !== location.hostname) return null;
       if (!/\/place\.html$/.test(u.pathname)) return null;
       var s = u.searchParams;
       return { u: u, n: (s.get('n') || '').trim() || '장소', a: (s.get('a') || '').trim(), lat: parseFloat(s.get('lat')), lng: parseFloat(s.get('lng')), id: s.get('id') || '', go: s.get('go') === 'kakao' ? 'kakao' : 'naver' };
