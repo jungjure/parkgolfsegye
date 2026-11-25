@@ -291,5 +291,6 @@ html.tk-lock,html.tk-lock body{overflow:hidden}
 /* 파크톡 창 안 (talk.html?embed=1) */
 body.embed{background:var(--bg)}
 body.embed #site-header,body.embed #site-footer,body.embed main.wrap>h1{display:none}
-body.embed main.wrap{max-width:none;padding:12px}
-body.embed .talk{height:calc(100vh - 60px);min-height:300px}
+body.embed main.wrap{max-width:none;padding:10px 10px 0}
+body.embed .talk{height:calc(100vh - 52px);min-height:300px}
+body.embed main.wrap .talk+p{margin:6px 0 0;line-height:1.4}
