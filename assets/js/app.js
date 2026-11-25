@@ -3,6 +3,8 @@
   var C = window.PGS_CONFIG || {};
   var root = document.body.getAttribute('data-root') || '';
   var page = document.body.getAttribute('data-page') || '';
+  var EMBED = /[?&]embed=1/.test(location.search) && window.parent !== window;
+  if (EMBED) { document.body.classList.add('embed'); var bt = document.createElement('base'); bt.target = '_top'; document.head.appendChild(bt); }
   var MENU = [
     ['schedule','대회 일정','schedule.html'],
     ['venues','구장 정보','venues.html'],
@@ -22,7 +24,7 @@
   var todayTxt = today.getFullYear() + '년 ' + (today.getMonth()+1) + '월 ' + today.getDate() + '일 ' + WD[today.getDay()] + '요일';
   var NAV = [['home','홈','index.html']].concat(MENU.filter(function(m){ return m[0] !== 'talk'; }));
 
-  var head = document.getElementById('site-header');
+  var head = EMBED ? null : document.getElementById('site-header');
   if (head) head.innerHTML = '<div class="mast"><div class="mast-in">'
     + '<a class="mast-logo" href="' + root + 'index.html" title="홈"><img src="' + root + 'assets/img/logo.png" alt=""><span class="nm">' + esc(C.SITE_NAME) + '</span></a>'
     + '<div class="sl"><span class="ed" id="pgs-ed"></span><span class="slogan">' + esc(C.SITE_NAME) + '는 오늘의 소식을 전합니다.</span>'
@@ -51,7 +53,7 @@
   }
 
   var co = C.COMPANY || {};
-  var foot = document.getElementById('site-footer');
+  var foot = EMBED ? null : document.getElementById('site-footer');
   function fi(k, v){ return v ? '<span class="fi"><b>' + k + '</b> ' + esc(v) + '</span>' : ''; }
   if (foot) foot.innerHTML = '<footer class="site-footer"><div class="inner">'
     + '<div class="frow">' + fi('명칭', co.name) + fi('주사무소', co.office) + fi('전화', co.tel) + '</div>'
@@ -62,6 +64,27 @@
     + '</div></footer>';
 
   // 로그인 상태 표시: 로그인 전 = 로그인·회원가입, 로그인 후 = 별명·마이페이지·(관리자)·로그아웃
+  // 파크톡: 누르면 화면 오른쪽에 반쯤 덮는 창으로 열림 (파크톡 화면 안에서는 그냥 이동)
+  function openTalk(){
+    var ov = document.getElementById('tk-ov');
+    if (!ov) {
+      document.body.insertAdjacentHTML('beforeend', '<div id="tk-ov" class="tk-ov"><aside class="tk" role="dialog" aria-modal="true" aria-label="파크톡">'
+        + '<div class="tk-hd"><b>' + TALK_SVG + '파크톡</b><a class="tk-full" href="' + root + 'talk.html">크게 보기</a><button type="button" class="tk-x" aria-label="닫기">×</button></div>'
+        + '<iframe class="tk-fr" title="파크톡" src="' + root + 'talk.html?embed=1"></iframe></aside></div>');
+      ov = document.getElementById('tk-ov');
+      ov.addEventListener('click', function(e){ if (e.target === ov || e.target.closest('.tk-x')) closeTalk(); });
+    }
+    document.documentElement.classList.add('tk-lock');
+    requestAnimationFrame(function(){ ov.classList.add('on'); });
+  }
+  function closeTalk(){ var ov = document.getElementById('tk-ov'); if (ov) ov.classList.remove('on'); document.documentElement.classList.remove('tk-lock'); }
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeTalk(); });
+  if (head && page !== 'talk') head.addEventListener('click', function(e){
+    var a = e.target.closest('a.talk-pill'); if (!a || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    e.preventDefault(); openTalk();
+  });
+  window.PGS_TALK = { open: openTalk, close: closeTalk };
+
   var ub = document.getElementById('user-box');
   function onp(k){ return page === k ? ' on' : ''; }
   if (ub) ub.innerHTML = '<a class="ab' + onp('login') + '" href="' + root + 'login.html">로그인</a><a class="ab' + onp('signup') + '" href="' + root + 'signup.html">회원가입</a>';
