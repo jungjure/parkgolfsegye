@@ -4,6 +4,8 @@
    2) 뉴스레터에서 열린 홈페이지 화면: 아래에 '뉴스레터 원문으로' 단추. 누르면 뉴스레터에서 열린 창을 모두 닫고 뉴스레터로 돌아감.
       창을 닫을 수 없는 브라우저에서는 이 창에서 뉴스레터를 바로 엶.
    홈페이지 기사 속(iframe) 뉴스레터는 app.js가 같은 창 이동으로 처리하므로 여기서는 아무것도 하지 않음. */
+// 홈페이지 잠금 (2026-11-25): 관리자만 화면을 봄. 잠금 켜기/끄기는 assets/js/lock.js 맨 위 LOCKED 한 곳에서.
+(function(){ if (window.__pgsLockLoad) return; window.__pgsLockLoad = 1; var r = document.head || document.documentElement; var st = document.createElement('style'); st.id = 'pgs-lock-hide'; st.textContent = 'body{visibility:hidden!important}'; r.appendChild(st); var s = document.createElement('script'); s.src = '/assets/js/lock.js?v=20261125a'; r.appendChild(s); })();
 (function () {
   if (window.__pgnNlWin) return; window.__pgnNlWin = 1;
   try { if (window.top !== window.self) return; } catch (e) { return; }

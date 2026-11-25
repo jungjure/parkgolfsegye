@@ -25,3 +25,6 @@ window.PGS_CONFIG = {
     bizNo: '399-87-04208'
   }
 };
+
+// 홈페이지 잠금 (2026-11-25): 관리자만 화면을 봄. 잠금 켜기/끄기는 assets/js/lock.js 맨 위 LOCKED 한 곳에서.
+(function(){ if (window.__pgsLockLoad) return; window.__pgsLockLoad = 1; var r = document.head || document.documentElement; var st = document.createElement('style'); st.id = 'pgs-lock-hide'; st.textContent = 'body{visibility:hidden!important}'; r.appendChild(st); var s = document.createElement('script'); s.src = '/assets/js/lock.js?v=20261125a'; r.appendChild(s); })();
