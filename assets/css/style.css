@@ -274,3 +274,22 @@ a.ev.jn:hover .ev-title{color:var(--main)}
 .site-footer .frow > *:not(:last-child)::after{content:"|";color:#ccc;margin:0 8px}
 .site-footer .fi b{font-weight:600;color:#555}
 @media (max-width:640px){ .site-footer .fi{white-space:normal} }
+
+/* ---- 파크톡 창 (화면 오른쪽 반쯤 덮음, parkgolfnews.org 방식) ---- */
+html.tk-lock,html.tk-lock body{overflow:hidden}
+.tk-ov{position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,0);visibility:hidden;transition:background .2s,visibility 0s .2s}
+.tk-ov.on{background:rgba(0,0,0,.4);visibility:visible;transition:background .2s}
+.tk{position:absolute;top:0;right:0;bottom:0;width:50vw;min-width:420px;max-width:100vw;background:#fff;display:flex;flex-direction:column;box-shadow:-6px 0 24px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .22s ease}
+.tk-ov.on .tk{transform:none}
+.tk-hd{display:flex;align-items:center;gap:10px;padding:12px 14px 12px 18px;border-bottom:1px solid var(--line)}
+.tk-hd b{display:flex;align-items:center;gap:6px;font-size:18px;color:#0b4d32}
+.tk-full{margin-left:auto;font-size:14px;color:var(--sub)}
+.tk-full:hover{color:var(--main)}
+.tk-x{border:0;background:none;font-size:30px;line-height:1;cursor:pointer;color:#333;padding:0 4px}
+.tk-fr{flex:1;width:100%;border:0;display:block;background:var(--bg)}
+@media (max-width:640px){ .tk{width:100vw;min-width:0} }
+/* 파크톡 창 안 (talk.html?embed=1) */
+body.embed{background:var(--bg)}
+body.embed #site-header,body.embed #site-footer,body.embed main.wrap>h1{display:none}
+body.embed main.wrap{max-width:none;padding:12px}
+body.embed .talk{height:calc(100vh - 60px);min-height:300px}
