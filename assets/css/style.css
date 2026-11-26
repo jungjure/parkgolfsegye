@@ -111,6 +111,7 @@ h1{font-size:24px;margin:8px 0 16px}
 .mapbtn{font-size:12px;border-radius:4px;padding:1px 7px;margin-left:2px}
 .mapbtn.nv{background:#03c75a;color:#fff}
 .mapbtn.kk{background:#fee500;color:#191919}
+.mapbtn.gg{background:#1a73e8;color:#fff}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .modal-box{background:#fff;border-radius:12px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:20px;position:relative}
 .modal-box h3{margin:8px 0 12px;font-size:19px;line-height:1.4}
