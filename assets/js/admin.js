@@ -241,13 +241,14 @@
       var h = '<div class="chips">' + [[7,'7일'],[30,'30일'],[90,'90일']].map(function(d){ return '<button data-days="' + d[0] + '"' + (sdays === d[0] ? ' class="on"' : '') + '>' + d[1] + '</button>'; }).join('') + '</div>';
       // 2026-11-27 사용자 "날짜별 방문은 한사람이 두번들어와도 한번으로": 날짜별·들어온 곳·기기를 모두 '한 사람 하루 1번' 방문으로 셈 (admin_stats 014)
       var visits = s.total.visits != null ? s.total.visits : s.total.pv;
-      h += '<div class="adm-cards"><div class="adm-card"><span>방문 (한 사람 하루 1번)</span><b>' + visits + '</b></div><div class="adm-card"><span>방문자 (기기 기준, 기간 중 1번)</span><b>' + s.total.uv + '</b></div><div class="adm-card"><span>화면 열람 (누른 화면 수)</span><b>' + s.total.pv + '</b></div></div>';
+      h += '<div class="adm-cards"><div class="adm-card"><span>방문</span><b>' + visits + '</b></div><div class="adm-card"><span>방문자 (기기)</span><b>' + s.total.uv + '</b></div><div class="adm-card"><span>화면 열람</span><b>' + s.total.pv + '</b></div></div>';
       // 2026-11-27 사용자 "날짜별 방문 챠트 숫자 다 보이게": 막대 위 숫자를 위 여백 안에 두고, 칸 너비를 숫자 자릿수에 맞춰 겹치지 않게, 날짜를 막대와 같은 칸에 넣어 같이 넘어가게
       var bw = Math.max(26, String(max).length * 9 + 10);
       h += '<div class="card"><b>날짜별 방문</b> <span class="muted small">한 사람이 그날 여러 번 들어와도 1번</span>' + (daily.length ? '<div class="vbars" id="vbars">' + daily.map(function(d, i){ var dd = d.d.slice(8), lab = (i === 0 || dd === '01') ? (+d.d.slice(5, 7)) + '/' + (+dd) : String(+dd);
           return '<div class="vcol" style="min-width:' + bw + 'px" title="' + d.d + ' 방문 ' + d.uv + '명, 화면 열람 ' + d.pv + '"><em>' + d.uv + '</em><i style="height:' + Math.max(2, Math.round(d.uv / max * 150)) + 'px"></i><span>' + lab + '</span></div>'; }).join('') + '</div>' : '<p class="muted small">아직 기록이 없습니다.</p>') + '</div>';
       h += '<div class="grid2"><div class="card"><b>많이 본 화면</b> <span class="muted small">화면 열람 수</span><table class="stat-tbl">' + (s.pages || []).map(function(p){ return '<tr><td><a href="' + root.replace(/\/$/, '') + p.path + '">' + esc((p.title || p.path).replace(/ - 파크골프세계$/, '')) + '</a></td><td class="n">' + p.pv + '</td></tr>'; }).join('') + '</table></div>'
         + '<div class="card"><b>들어온 곳</b> <span class="muted small">방문 기준 (그날 처음 들어온 곳)</span><table class="stat-tbl">' + (s.refs || []).map(function(x){ return '<tr><td>' + esc(x.host) + '</td><td class="n">' + x.n + '</td></tr>'; }).join('') + '</table><b>기기</b> <span class="muted small">방문 기준</span><table class="stat-tbl">' + (s.devices || []).map(function(x){ return '<tr><td>' + esc(x.device) + '</td><td class="n">' + x.n + '</td></tr>'; }).join('') + '</table></div></div>';
+      h += '<p class="muted small">방문 = 한 사람(기기)이 하루에 여러 번 들어와도 1번. 방문자 = 기간 중 같은 사람은 1명. 화면 열람 = 누른 화면 수.</p>';
       h += '<p class="muted small">IP 주소와 회원 정보는 남기지 않습니다. 방문 기록은 1년 뒤 자동으로 지워집니다.</p>';
       body().innerHTML = h;
       if (!document.getElementById('vbars-css')) { var st = document.createElement('style'); st.id = 'vbars-css';
