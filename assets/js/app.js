@@ -167,15 +167,15 @@
     document.head.appendChild(s);
   }
   function shareInfo(){
+    // 2026-11-26 사용자: 모든 화면의 카톡 공유는 정사각 그림(로고·이름·주소 띠)을 기본으로, 메뉴 이름을 넣은 그림을 씀. 설명 글은 넣지 않음.
     var h1 = document.querySelector('main h1'), t = (h1 && h1.textContent.trim()) || document.title;
     var title = (t === C.SITE_NAME || !t) ? C.SITE_NAME : t + ' - ' + C.SITE_NAME;
-    var md = document.querySelector('meta[name="description"]'), desc = '';
-    var body = document.querySelector('main #post-body, main #article .art-body, main .art-body');
-    if (body) desc = body.textContent.replace(/\s+/g, ' ').trim().slice(0, 90);
-    // 2026-11-26 사용자: 기사 아닌 화면은 카톡 공유에 설명 글을 넣지 않음(주소는 그림 아래 띠에 있음)
-    var im = document.querySelector('main #post-body img, main .art-body img, main .art-imgs img');
-    var img = im && /^https:/.test(im.src) ? im.src : (C.SITE_URL || location.origin) + '/assets/img/share.jpg';
-    return { title: title, desc: desc, img: img, og: img.indexOf('/assets/img/share.jpg') > -1, url: location.href.split('#')[0] };
+    var key = page;
+    if (page === 'article') key = 'news';
+    if (page === 'post') { var cat = document.querySelector('main .nw-cat'); key = cat && /자유/.test(cat.textContent) ? 'board' : 'column'; }
+    var IMG_KEYS = /^(schedule|venues|news|course|column|board|join|talk)$/;
+    var img = (C.SITE_URL || location.origin) + '/assets/img/' + (IMG_KEYS.test(key) ? 'share_' + key : 'share') + '.jpg';
+    return { title: title, desc: '', img: img, og: true, url: location.href.split('#')[0] };
   }
   function toast(t){
     var el = document.getElementById('pgs-toast');
