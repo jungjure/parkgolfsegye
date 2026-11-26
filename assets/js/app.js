@@ -167,14 +167,15 @@
     document.head.appendChild(s);
   }
   function shareInfo(){
-    // 2026-11-26 사용자: 모든 화면의 카톡 공유는 정사각 그림(로고·이름·주소 띠)을 기본으로, 메뉴 이름을 넣은 그림을 씀. 그림 아래에 한 줄 설명.
+    // 2026-11-26 사용자: 모든 화면의 카톡 공유는 정사각 그림(로고·이름·주소 띠) 하나를 기본으로, 그림 아래에 한 줄 설명.
     var h1 = document.querySelector('main h1'), t = (h1 && h1.textContent.trim()) || document.title;
     var title = (t === C.SITE_NAME || !t) ? C.SITE_NAME : t + ' - ' + C.SITE_NAME;
     var key = page;
     if (page === 'article') key = 'news';
     if (page === 'post') { var cat = document.querySelector('main .nw-cat'); key = cat && /자유/.test(cat.textContent) ? 'board' : 'column'; }
     var IMG_KEYS = /^(schedule|venues|news|course|column|board|join|talk)$/;
-    var img = (C.SITE_URL || location.origin) + '/assets/img/' + (IMG_KEYS.test(key) ? 'share_' + key : 'share') + '.jpg?v=2'; // 그림을 바꾸면 v 숫자를 올려 카톡 그림 캐시를 새로 받게 함
+    // 2026-11-26 사용자 "로고밑의 메뉴표시는 없애줘": 모든 화면이 같은 그림(share.jpg)을 쓰고, 메뉴는 제목과 아래 한 줄로만 구분
+    var img = (C.SITE_URL || location.origin) + '/assets/img/share.jpg?v=3'; // 그림을 바꾸면 v 숫자를 올려 카톡 그림 캐시를 새로 받게 함
     // 그림 아래 한 줄 설명 (2026-11-26 사용자 "하단에는 글 하나를 기술해줘"): 메뉴별 소개, 기사·글은 본문 첫 부분
     var LINE = { home: '파크골프 대회 일정·구장 정보·소식을 한곳에서', schedule: '전국 파크골프 대회·접수 일정을 한눈에', venues: '전국 파크골프장 위치와 이용 정보',
       news: '오늘의 파크골프 소식', course: '처음 시작하는 분을 위한 파크골프 입문강좌', column: '독자가 쓰는 파크골프 이야기', board: '파크골프 동호인 자유게시판',
