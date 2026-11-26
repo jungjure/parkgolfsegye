@@ -9,6 +9,7 @@
     ['schedule','대회 일정','schedule.html'],
     ['venues','구장 정보','venues.html'],
     ['news','뉴스','news.html'],
+    ['course','입문강좌','course.html'],
     ['column','독자칼럼','column.html'],
     ['board','자유게시판','board.html'],
     ['join','조인게시판','join.html'],
@@ -155,7 +156,7 @@
 
   // 공유 (2026-11-25): 각 화면 제목 옆 [공유] → 카카오톡 공유 / 밴드 공유 / 주소 복사
   var KAKAO_JS = '329814625fa8441db2871c2b10da8efa';
-  var SHARE_PAGES = /^(home|schedule|venues|news|article|column|board|post|join|talk|privacy)$/;
+  var SHARE_PAGES = /^(home|schedule|venues|news|course|article|column|board|post|join|talk|privacy)$/;
   var SHARE_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
   var isPhone = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   function loadKakao(){
