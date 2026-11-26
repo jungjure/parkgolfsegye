@@ -15,6 +15,9 @@ const got = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(m => {
 }).filter(v => v.id);
 const map = new Map((old.videos || []).map(v => [v.id, v]));
 let changed = false;
+// 피드 기간 안에 있었는데 피드에서 빠진 영상(지우거나 재생목록에서 뺀 영상)은 목록에서도 뺀다
+if (got.length) { const oldest = got.map(v => v.published).sort()[0]; const ids = new Set(got.map(v => v.id));
+  for (const [id, v] of map) if (!ids.has(id) && String(v.published) >= oldest) { map.delete(id); changed = true; } }
 for (const v of got) { const o = map.get(v.id); if (!o || o.title !== v.title || o.desc !== v.desc) { map.set(v.id, { ...o, ...v }); changed = true; } }
 if (!changed) { console.log('no change'); process.exit(0); }
 const videos = [...map.values()].sort((a, b) => String(a.published).localeCompare(String(b.published)));
