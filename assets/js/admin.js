@@ -2,7 +2,7 @@
 (function(){
   if (!window.sb) return;
   var root = PGS.root, esc = PGS.esc, box = document.getElementById('admin');
-  var TABS = [['home','오늘 요약'],['pending','승인 대기'],['comments','댓글 관리'],['members','회원'],['venues','구장'],['stats','통계'],['settings','설정']];
+  var TABS = [['home','오늘 요약'],['uploads','오늘 업로드현황'],['pending','승인 대기'],['comments','댓글 관리'],['members','회원'],['venues','구장'],['stats','통계'],['settings','설정']];
   function todayStart(){ var d = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' })); return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - 9 * 3600 * 1000).toISOString(); }
   function cnt(q){ return q.then(function(r){ return r.count || 0; }); }
   var me = {};
@@ -280,11 +280,72 @@
     });
   }
 
+  /* 오늘 업로드현황 (2026-11-27 사용자 "관리자 메뉴에서 오늘 업로드된것 순서대로 볼수 있게 해줘. 내가 쓴거든 회원들이 쓴거든 … 오늘 업로드현황"):
+     그날 새로 올라온 뉴스 기사, 독자칼럼·자유게시판 글, 조인글, 댓글, 파크톡, 일정, 유튜브 영상을 올라온 시각 순서(이른 것부터)로 한 줄씩 보여 줌.
+     유튜브 영상은 홈페이지에 파일을 올리지 않고 assets/course.json·newsvideo.json(유튜브 재생목록에서 가져온 목록)의 링크만 보여 줌. */
+  var upDay = null, upKind = '';
+  function kday(d){ var k = new Date(new Date(d).toLocaleString('en-US', { timeZone: 'Asia/Seoul' })); return k.getFullYear() + '-' + String(k.getMonth()+1).padStart(2,'0') + '-' + String(k.getDate()).padStart(2,'0'); }
+  function hm(iso){ var k = new Date(new Date(iso).toLocaleString('en-US', { timeZone: 'Asia/Seoul' })); return String(k.getHours()).padStart(2,'0') + ':' + String(k.getMinutes()).padStart(2,'0'); }
+  function uploads(){
+    if (!upDay) upDay = kday(new Date());
+    var p = upDay.split('-'), y = +p[0], mo = +p[1], d = +p[2];
+    var t0 = new Date(Date.UTC(y, mo-1, d) - 9 * 3600 * 1000).toISOString(), t1 = new Date(Date.UTC(y, mo-1, d+1) - 9 * 3600 * 1000).toISOString();
+    var WD = ['일','월','화','수','목','금','토'], wd = WD[new Date(Date.UTC(y, mo-1, d)).getUTCDay()];
+    body().innerHTML = '<div class="sch-nav" style="display:flex;align-items:center;gap:8px;margin:0 0 10px"><button data-up="-1">◀</button><b>' + mo + '월 ' + d + '일 (' + wd + ')' + (upDay === kday(new Date()) ? ' 오늘' : '') + '</b><button data-up="1">▶</button>' + (upDay !== kday(new Date()) ? '<button data-up="0">오늘</button>' : '') + '</div><div id="up-list"><p class="muted">불러오는 중입니다…</p></div>';
+    function rng(q){ return q.gte('created_at', t0).lt('created_at', t1).order('created_at', { ascending: true }).limit(1000); }
+    function js(u){ return fetch(root + u + '?t=' + Date.now()).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }); }
+    Promise.all([
+      rng(sb.from('articles').select('id,title,category,author_id,author_name,source,created_at,is_published')),
+      rng(sb.from('posts').select('id,board,title,author_id,author_name,status,created_at')),
+      rng(sb.from('joins').select('id,title,place,author_id,created_at')),
+      rng(sb.from('comments').select('id,target_type,target_id,body,author_id,author_name,is_hidden,created_at')),
+      rng(sb.from('talk_messages').select('id,room,user_id,body,created_at')),
+      rng(sb.from('events').select('id,title,kind,source,created_at')),
+      js('assets/course.json'), js('assets/newsvideo.json'),
+      sb.from('profiles').select('id').eq('role', 'admin')
+    ]).then(function(v){
+      var admins = {}; ((v[8] && v[8].data) || []).forEach(function(a){ admins[a.id] = 1; });
+      var items = [], ids = [];
+      function who(id, name){ if (id) ids.push(id); return { id: id, name: name }; }
+      (v[0].data || []).forEach(function(a){ items.push({ t: a.created_at, k: '뉴스', tag: a.category || '기사', title: a.title, href: root + 'article.html?id=' + a.id, w: who(a.author_id, a.author_name || (a.source ? '자동 가져오기' : '')), note: a.is_published === false ? '비공개' : '' }); });
+      (v[1].data || []).forEach(function(p){ items.push({ t: p.created_at, k: p.board === 'column' ? '독자칼럼' : '자유게시판', tag: p.board === 'column' ? '칼럼' : '자유', title: p.title, href: root + 'post.html?id=' + p.id, w: who(p.author_id, p.author_name), note: p.status === 'pending' ? '승인 대기' : p.status === 'rejected' ? '돌려보냄' : '' }); });
+      (v[2].data || []).forEach(function(j){ items.push({ t: j.created_at, k: '조인', tag: '조인', title: j.title || j.place || '조인글', href: root + 'join.html', w: who(j.author_id) }); });
+      (v[3].data || []).forEach(function(c){ items.push({ t: c.created_at, k: '댓글', tag: '댓글', title: String(c.body || '').slice(0, 80), href: c.target_type === 'article' ? root + 'article.html?id=' + c.target_id : c.target_type === 'post' ? root + 'post.html?id=' + c.target_id : '#comments', w: who(c.author_id, c.author_name), note: c.is_hidden ? '숨김' : '' }); });
+      (v[4].data || []).forEach(function(m){ items.push({ t: m.created_at, k: '파크톡', tag: '파크톡', title: String(m.body || '').slice(0, 80), href: root + 'talk.html', w: who(m.user_id) }); });
+      (v[5].data || []).forEach(function(e){ items.push({ t: e.created_at, k: '일정', tag: e.kind || '일정', title: e.title, href: root + 'schedule.html', w: who(null, e.source ? '자동 가져오기' : '') }); });
+      [[v[6], '입문강좌'], [v[7], '오늘일정 뉴스']].forEach(function(x){ ((x[0] && x[0].videos) || []).forEach(function(y){ if (y.published && kday(y.published) === upDay) items.push({ t: y.published, k: '유튜브', tag: '유튜브', title: y.title, href: 'https://youtu.be/' + y.id, w: who(null, '유튜브 ' + x[1]), note: '링크' }); }); });
+      items.sort(function(a, b){ return new Date(a.t) - new Date(b.t); });
+      PGS.nicks(ids).then(function(nk){
+        var kinds = ['뉴스','독자칼럼','자유게시판','조인','댓글','파크톡','일정','유튜브'];
+        var count = {}; items.forEach(function(i){ count[i.k] = (count[i.k] || 0) + 1; });
+        var list = upKind ? items.filter(function(i){ return i.k === upKind; }) : items;
+        var h = '<div class="chips"><button data-uk=""' + (!upKind ? ' class="on"' : '') + '>전체 ' + items.length + '</button>'
+          + kinds.filter(function(k){ return count[k]; }).map(function(k){ return '<button data-uk="' + k + '"' + (upKind === k ? ' class="on"' : '') + '>' + k + ' ' + count[k] + '</button>'; }).join('') + '</div>';
+        if (!list.length) h += '<p class="card muted">이 날 올라온 것이 없습니다.</p>';
+        else h += '<ul class="posts">' + list.map(function(i, n){
+          var nm = i.w.id ? (nk[i.w.id] || '회원') : (i.w.name || '');
+          var role = i.w.id ? (admins[i.w.id] ? '관리자' : '회원') : '';
+          return '<li><a href="' + esc(i.href) + '"><span class="muted small" style="min-width:46px">' + (n + 1) + '. ' + hm(i.t) + '</span><span class="tag">' + esc(i.tag) + '</span><span style="flex:1;min-width:0"><strong>' + esc(i.title || '(제목 없음)') + '</strong>'
+            + '<span class="muted small" style="display:block">' + esc(i.k) + (nm ? ' · ' + esc(nm) : '') + (role ? ' (' + role + ')' : '') + (i.note ? ' · ' + esc(i.note) : '') + '</span></span></a></li>'; }).join('') + '</ul>';
+        h += '<p class="muted small">올라온 시각이 이른 것부터 보여 줍니다. 유튜브 영상은 홈페이지에 파일을 올리지 않고 유튜브 링크만 가져옵니다(재생목록 목록은 매시간 갱신).</p>';
+        var el = document.getElementById('up-list'); if (el) el.innerHTML = h;
+      });
+    });
+  }
+  box.addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-up],[data-uk]'); if (!b || !document.getElementById('up-list')) return;
+    if (b.hasAttribute('data-uk')) { upKind = b.getAttribute('data-uk'); uploads(); return; }
+    var n = +b.getAttribute('data-up');
+    if (n === 0) upDay = kday(new Date());
+    else { var q = upDay.split('-'); upDay = kday(new Date(Date.UTC(+q[0], +q[1]-1, +q[2] + n, 3))); }
+    uploads();
+  });
+
   function route(){
     var tab = (location.hash || '#home').slice(1);
     if (!TABS.some(function(t){ return t[0] === tab; })) tab = 'home';
     shell(tab);
-    ({ home: home, pending: pending, comments: comments, members: members, venues: venues, stats: stats, settings: settings })[tab]();
+    ({ home: home, uploads: uploads, pending: pending, comments: comments, members: members, venues: venues, stats: stats, settings: settings })[tab]();
   }
   PGS.me().then(function(m){
     me = m || {};
