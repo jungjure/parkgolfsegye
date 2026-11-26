@@ -80,6 +80,22 @@
       if (a.source_name) h += '<p class="muted small">출처: ' + (a.source_url ? '<a href="' + esc(a.source_url) + '">' + esc(a.source_name) + '</a>' : esc(a.source_name)) + '</p>';
       h += '<p><a class="btn line" href="' + root + 'news.html">목록으로</a></p>';
       art.innerHTML = h;
+      // 2026-11-26 사용자 지시 "이 뉴스레터 기사는 새홈페이지에 있는 기사로 대체해주고 앞으로도 계속 그렇게 해줘":
+      // 기사 속 뉴스레터(iframe.art-embed)에서 링크를 누르면 작은 창 안이 아니라 바깥 화면 전체가 그 새 홈페이지 기사·화면으로 바뀜(모든 호에 적용)
+      var ef = art.querySelector('iframe.art-embed');
+      if (ef) ef.addEventListener('load', function(){
+        try {
+          var d = ef.contentDocument; if (!d || d.__pgsTop) return; d.__pgsTop = 1;
+          d.addEventListener('click', function(ev){
+            if (ev.defaultPrevented || ev.button !== 0 || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+            var a = ev.target && ev.target.closest && ev.target.closest('a[href]'); if (!a) return;
+            var hr = a.getAttribute('href') || '';
+            if (!hr || hr.charAt(0) === '#' || /^(javascript|tel|sms|mailto):/i.test(hr)) return;
+            ev.preventDefault(); ev.stopPropagation();
+            window.location.href = a.href;
+          }, true);
+        } catch (e) {}
+      });
       renderBody(document.getElementById('art-body'), body);
     });
   }
