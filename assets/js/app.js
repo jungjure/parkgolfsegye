@@ -270,7 +270,7 @@
 // 대회 일정 자세히 보기 창(schedule.js)과 뉴스 기사 본문(news.js)에서 씀. 이미 링크인 글자는 건드리지 않음. 팩스 번호는 제외.
 (function(){
   var URL_RE = /(?:https?:\/\/|www\.)[^\s<>"'\u3000가-힣]+/g;
-  var TEL_RE = /(?<![\d-])(?:0\d{1,3}[-.)]\s?\d{3,4}[-.]\d{4}|0\d{1,3}\s\d{3,4}\s\d{4}|01[016789]\d{7,8}|1[5-9]\d{2}-\d{4})(?![\d-])/g;
+  var TEL_RE = /(?<![\d-])(?:0\d{1,3}[-.)]\s?\d{3,4}[-.]\d{4}|0\d{1,3}\s\d{3,4}\s\d{4}|01[016789]\d{7,8}|\d{4}-\d{4})(?![\d-])/g;   // ****-**** (숫자 4자리-4자리)도 전화번호 (2026-11-27 사용자 "항상")
   function trimUrl(u){
     u = u.replace(/[.,;:!?。、]+$/, '');
     while (/[)\]}>]$/.test(u)) {
@@ -295,6 +295,7 @@
       while ((m = TEL_RE.exec(text))) {
         var s = m.index, e = s + m[0].length;
         if (/(팩스|FAX|Fax|fax)\s*[:：)]?\s*(번호)?\s*[:：]?\s*$/.test(text.slice(Math.max(0, s - 10), s))) continue;
+        if (/^(19|20)\d{2}-(19|20)\d{2}$/.test(m[0])) continue;   // 2026-2027 같은 연도 범위는 제외
         if (marks.some(function(k){ return s < k.e && e > k.s; })) continue;
         marks.push({ s: s, e: e, href: 'tel:' + m[0].replace(/\D/g, ''), txt: m[0], cls: 'pgtel' });
       }
