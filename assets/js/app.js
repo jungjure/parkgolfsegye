@@ -175,7 +175,7 @@
     if (page === 'post') { var cat = document.querySelector('main .nw-cat'); key = cat && /자유/.test(cat.textContent) ? 'board' : 'column'; }
     var IMG_KEYS = /^(schedule|venues|news|course|column|board|join|talk)$/;
     // 2026-11-26 사용자 "로고밑의 메뉴표시는 없애줘": 모든 화면이 같은 그림(share.jpg)을 쓰고, 메뉴는 제목과 아래 한 줄로만 구분
-    var img = (C.SITE_URL || location.origin) + '/assets/img/share.jpg?v=3'; // 그림을 바꾸면 v 숫자를 올려 카톡 그림 캐시를 새로 받게 함
+    var img = (C.SITE_URL || location.origin) + '/assets/img/share.jpg?v=4'; // 그림을 바꾸면 v 숫자를 올려 카톡 그림 캐시를 새로 받게 함
     // 그림 아래 한 줄 설명 (2026-11-26 사용자 "하단에는 글 하나를 기술해줘"): 메뉴별 소개, 기사·글은 본문 첫 부분
     var LINE = { home: '파크골프 대회 일정·구장 정보·소식을 한곳에서', schedule: '전국 파크골프 대회·접수 일정을 한눈에', venues: '전국 파크골프장 위치와 이용 정보',
       news: '오늘의 파크골프 소식', course: '처음 시작하는 분을 위한 파크골프 입문강좌', column: '독자가 쓰는 파크골프 이야기', board: '파크골프 동호인 자유게시판',
@@ -203,7 +203,7 @@
     if (!(window.Kakao && Kakao.isInitialized && Kakao.isInitialized() && Kakao.Share)) { loadKakao(); copyUrl(i.url); return; }
     try {
       Kakao.Share.sendDefault({ objectType: 'feed',
-        content: { title: i.title, description: i.desc || undefined, imageUrl: i.img, imageWidth: i.og ? 1080 : undefined, imageHeight: i.og ? 1080 : undefined, link: { mobileWebUrl: i.url, webUrl: i.url } }, // 카톡 공유용 정사각 그림(1080x1080, 로고·이름·주소 띠)이 카드의 약 2/3를 차지
+        content: { title: i.title, description: i.desc || undefined, imageUrl: i.img, imageWidth: i.og ? 1080 : undefined, imageHeight: i.og ? 864 : undefined, link: { mobileWebUrl: i.url, webUrl: i.url } }, // 카톡 공유 그림 1080x864 (2026-11-26 사용자 "80%크기로": 정사각보다 높이 80%)
         buttons: [{ title: '자세히 보기', link: { mobileWebUrl: i.url, webUrl: i.url } }] });
     } catch (e) { copyUrl(i.url); }
   }
