@@ -6,7 +6,7 @@ import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 const SITE = 'https://parkgolfsegye.co.kr';
 const SB_URL = 'https://rzteighnvqroxuqqwhov.supabase.co';
 const SB_KEY = 'sb_publishable_DV2c-2cLZQN3gdBzCKzHpg_VHyTMCtc';
-const STATIC = ['/', '/schedule.html', '/venues.html', '/news.html', '/column.html', '/board.html', '/join.html', '/privacy.html'];
+const STATIC = ['/', '/schedule.html', '/venues.html', '/news.html', '/course.html', '/column.html', '/board.html', '/join.html', '/privacy.html'];
 
 const esc = s => String(s ?? '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
