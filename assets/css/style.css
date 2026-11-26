@@ -109,8 +109,8 @@ h1{font-size:24px;margin:8px 0 16px}
 .ev-title:hover{color:var(--main)}
 .ev-place{font-size:14px;color:var(--sub);display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .mapbtn{font-size:12px;border-radius:4px;padding:1px 7px;margin-left:2px}
-.mapbtn.nv{background:#03c75a;color:#fff}
-.mapbtn.kk{background:#fee500;color:#191919}
+.mapbtn.nv{background:#9ae9bd;color:#035c2c}  /* 2026-11-27 사용자 "네이버 카카오 바탕색은 60% 옅게": 원래 색에 흰색 60% 섞음, 글자는 읽히게 진한 초록 */
+.mapbtn.kk{background:#fff599;color:#191919}
 .mapbtn.gg{background:#1a73e8;color:#fff}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .modal-box{background:#fff;border-radius:12px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:20px;position:relative}
