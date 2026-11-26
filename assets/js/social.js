@@ -1,4 +1,4 @@
-// 간편 로그인(카카오·네이버·구글) 단추 + 로그인 뒤 지역 선택 안내 (2026-11-26)
+// 간편 로그인(카카오·네이버·구글) 단추 + 로그인 뒤 지역·휴대폰(문자 인증) 안내 (2026-11-26)
 // 불러오는 곳: app.js 끝에서 모든 화면에 자동으로 넣음. 글꼴은 부모(Pretendard)를 그대로 씀.
 (function(){
   if (window.__pgsSocial) return; window.__pgsSocial = 1;
@@ -44,7 +44,7 @@
       + '<button type="button" class="sbtn kakao" data-p="kakao">' + ICON.kakao + '카카오로 시작하기</button>'
       + '<button type="button" class="sbtn naver" data-p="naver">' + ICON.naver + '네이버로 시작하기</button>'
       + '<button type="button" class="sbtn google" data-p="google">' + ICON.google + '구글로 시작하기</button>'
-      + '<p class="sns-note">처음이시면 바로 회원가입이 됩니다. 가입 뒤 사는 지역(시·도, 시·군·구)을 골라 주시면 우리 지역 대회와 소식을 먼저 알려 드립니다.</p>';
+      + '<p class="sns-note">처음이시면 바로 회원가입이 됩니다. 가입 뒤 사는 지역(시·도, 시·군·구)과 휴대폰 번호를 적어 주시면 우리 지역 대회와 소식을 먼저 알려 드립니다.</p>';
     host.addEventListener('click', function(e){
       var b = e.target.closest('.sbtn'); if (!b) return;
       start(b.getAttribute('data-p'));
@@ -96,38 +96,87 @@
     } catch (e) { say('로그인 중 문제가 생겼습니다. 다시 시도해 주세요.', true); }
   }
 
-  // 3) 로그인한 회원에게 지역(시·도, 시·군·구)이 없으면 선택 안내
+  // 3) 로그인한 회원에게 지역(시·도, 시·군·구)·휴대폰 번호가 없으면 안내 (간편 가입은 가입 마무리 + 휴대폰 문자 인증)
+  var PFN = 'https://rzteighnvqroxuqqwhov.supabase.co/functions/v1/phone-verify';
+  async function pcall(body, s){
+    var C = window.PGS_CONFIG || {};
+    var h = { 'Content-Type': 'application/json', apikey: C.SUPABASE_ANON_KEY };
+    if (s) h.Authorization = 'Bearer ' + s.access_token;
+    try { var r = await fetch(PFN, { method: 'POST', headers: h, body: JSON.stringify(body) }); return await r.json(); } catch (e) { return { error: 'net' }; }
+  }
+  function pOk(p){ return /^01[016789]\d{7,8}$/.test(String(p || '').replace(/\D/g, '')); }
+  function pFmt(p){ var d = String(p || '').replace(/\D/g, ''); return d.length === 11 ? d.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3') : d.length === 10 ? d.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3') : String(p || '').trim(); }
+  var PERR = { phone: '휴대폰 번호를 확인해 주세요.', wait: '1분 뒤에 다시 받을 수 있습니다.', too_many: '오늘은 더 받을 수 없습니다. 내일 다시 해 주세요.', sms: '문자를 보내지 못했습니다. 번호를 확인해 주세요.', wrong: '인증번호가 맞지 않습니다.', expired: '인증번호 시간이 지났습니다. 다시 받아 주세요.', no_code: '먼저 인증번호를 받아 주세요.', login: '다시 로그인해 주세요.' };
+
   async function prompt(){
     if (/^(login|signup|find|reset|oauth)$/.test(page)) return;
     var s = (await sb.auth.getSession()).data.session; if (!s) return;
-    var r = await sb.from('profiles').select('nickname,region_sido,region_sigungu,agreed_at').eq('id', s.user.id).maybeSingle();
+    var r = await sb.from('profiles').select('nickname,region_sido,region_sigungu,agreed_at,phone,phone_verified_at').eq('id', s.user.id).maybeSingle();
     var p = r.data; if (!p) return;
+    var social = /@social\.parkgolfsegye\.co\.kr$/.test(s.user.email || '') || ((s.user.app_metadata || {}).provider && s.user.app_metadata.provider !== 'email');
     var needAgree = !p.agreed_at, needRegion = !p.region_sido || !p.region_sigungu;
-    if (!needAgree && !needRegion) return;
+    var needPhone = !p.phone || (social && !p.phone_verified_at);
+    if (!needAgree && !needRegion && !needPhone) return;
     if (!needAgree && sessionStorage.getItem('pgs_pp_later')) return;
+    var st = await pcall({ action: 'status' });
+    var smsOn = !!(st && st.configured);
+    if (!needAgree && !needRegion && p.phone && !smsOn) return; // 문자 인증 준비 전에는 번호가 있으면 다시 묻지 않음
     css();
     var R = window.PGS_REGIONS;
     if (!R) { await new Promise(function(ok){ var x = document.createElement('script'); x.src = root + 'assets/js/regions.js'; x.onload = ok; x.onerror = ok; document.head.appendChild(x); }); R = window.PGS_REGIONS || {}; }
     var d = document.createElement('div'); d.id = 'pgs-pp';
     d.innerHTML = '<div class="pp" role="dialog" aria-modal="true" aria-labelledby="pgs-pp-t">'
-      + '<h2 id="pgs-pp-t">' + (needAgree ? '가입을 마무리해 주세요' : '사는 지역을 골라 주세요') + '</h2>'
-      + '<p>사는 지역(시·도, 시·군·구)을 골라 주시면 우리 지역 파크골프 대회와 소식을 먼저 알려 드립니다.</p>'
+      + '<h2 id="pgs-pp-t">' + (needAgree ? '가입을 마무리해 주세요' : '회원 정보를 채워 주세요') + '</h2>'
+      + '<p>사는 지역과 휴대폰 번호를 적어 주시면 우리 지역 파크골프 대회와 소식을 먼저 알려 드리고, 조인게시판에서 함께 칠 분과 연락할 수 있습니다.</p>'
       + (needAgree ? '<label>별명 (글·댓글에 보임, 2~12자)<input type="text" name="nick" maxlength="12"></label>' : '')
       + '<label>지역<span class="two"><select name="s1" aria-label="시·도"></select><select name="s2" aria-label="시·군·구" disabled></select></span></label>'
+      + '<label>휴대폰 번호<span class="two"><input type="text" name="ph" inputmode="numeric" maxlength="13" placeholder="010-1234-5678" autocomplete="tel">'
+      + (smsOn ? '<button type="button" class="pbtn snd">인증번호 받기</button>' : '') + '</span></label>'
+      + (smsOn ? '<label class="codebox" style="display:none">인증번호 6자리<span class="two"><input type="text" name="cd" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><button type="button" class="pbtn chk">확인</button></span></label>' : '')
+      + '<p class="pmsg" style="margin:-4px 0 10px;font-size:13px"></p>'
       + (needAgree ? '<label class="ck"><input type="checkbox" name="ag"> <span>개인정보 수집·이용에 동의합니다 (필수) <a href="' + root + 'privacy.html" target="_blank">보기</a></span></label><label class="ck"><input type="checkbox" name="age"> <span>만 14세 이상입니다 (필수)</span></label>' : '')
       + '<p class="msg"></p><div class="acts">' + (needAgree ? '<button type="button" class="out">로그아웃</button>' : '<button type="button" class="later">나중에</button>') + '<button type="button" class="ok">저장</button></div></div>';
     document.body.appendChild(d);
-    var $ = function(n){ return d.querySelector('[name="' + n + '"]'); }, m = d.querySelector('.msg');
+    if (!document.getElementById('pgs-pp-css2')) { var s2c = document.createElement('style'); s2c.id = 'pgs-pp-css2'; s2c.textContent = '#pgs-pp .pbtn{flex:none;height:42px;margin-top:4px;padding:0 12px;border-radius:8px;border:1px solid var(--main,#0b5d3b);background:#fff;color:var(--main,#0b5d3b);font:inherit;font-size:14px;font-weight:700;cursor:pointer}#pgs-pp .two input{flex:1;min-width:0}#pgs-pp .pmsg.ok{color:#1b7a3a}#pgs-pp .pmsg.err{color:#c62828}'; document.head.appendChild(s2c); }
+    var $ = function(n){ return d.querySelector('[name="' + n + '"]'); }, m = d.querySelector('.msg'), pm = d.querySelector('.pmsg');
+    function pmsg(t, ok){ pm.textContent = t; pm.className = 'pmsg ' + (ok ? 'ok' : 'err'); }
     if ($('nick')) $('nick').value = p.nickname || '';
+    $('ph').value = p.phone || '';
+    var verified = !!p.phone_verified_at, vPhone = verified ? String(p.phone || '').replace(/\D/g, '') : '';
+    if (verified) pmsg('인증된 번호입니다.', true);
+    $('ph').addEventListener('input', function(){ if (verified && $('ph').value.replace(/\D/g, '') !== vPhone) { verified = false; pmsg('', true); } });
     var s1 = $('s1'), s2 = $('s2');
     s1.innerHTML = '<option value="">시·도 선택</option>' + Object.keys(R).map(function(k){ return '<option' + (k === p.region_sido ? ' selected' : '') + '>' + k + '</option>'; }).join('');
     function fill(v){ var l = R[s1.value] || []; s2.innerHTML = '<option value="">시·군·구 선택</option>' + l.map(function(k){ return '<option' + (k === v ? ' selected' : '') + '>' + k + '</option>'; }).join(''); s2.disabled = !l.length; }
     s1.addEventListener('change', function(){ fill(''); }); fill(p.region_sigungu || '');
+    var snd = d.querySelector('.snd'), chk = d.querySelector('.chk');
+    if (snd) snd.onclick = async function(){
+      if (!pOk($('ph').value)) return pmsg('휴대폰 번호를 확인해 주세요.');
+      snd.disabled = true; pmsg('문자를 보내는 중입니다...', true);
+      var j = await pcall({ action: 'send', phone: $('ph').value }, s);
+      snd.disabled = false;
+      if (!j.ok) return pmsg(PERR[j.error] || '문자를 보내지 못했습니다. 잠시 뒤 다시 해 주세요.');
+      d.querySelector('.codebox').style.display = ''; snd.textContent = '다시 받기'; $('cd').focus();
+      pmsg('인증번호를 문자로 보냈습니다. 5분 안에 입력해 주세요.', true);
+    };
+    if (chk) chk.onclick = async function(){
+      var c = $('cd').value.replace(/\D/g, '');
+      if (c.length !== 6) return pmsg('인증번호 6자리를 입력해 주세요.');
+      chk.disabled = true;
+      var j = await pcall({ action: 'check', phone: $('ph').value, code: c }, s);
+      chk.disabled = false;
+      if (!j.ok) return pmsg(PERR[j.error] || '확인하지 못했습니다. 다시 해 주세요.');
+      verified = true; vPhone = $('ph').value.replace(/\D/g, ''); $('ph').value = j.phone || pFmt($('ph').value);
+      d.querySelector('.codebox').style.display = 'none'; pmsg('휴대폰 번호가 확인되었습니다.', true);
+    };
     var later = d.querySelector('.later'); if (later) later.onclick = function(){ sessionStorage.setItem('pgs_pp_later', '1'); d.remove(); };
     var out = d.querySelector('.out'); if (out) out.onclick = async function(){ await sb.auth.signOut(); location.href = root + 'index.html'; };
     d.querySelector('.ok').onclick = async function(){
       var up = { region_sido: s1.value, region_sigungu: s2.value };
       if (!up.region_sido || !up.region_sigungu) { m.textContent = '시·도와 시·군·구를 골라 주세요.'; return; }
+      if (!pOk($('ph').value)) { m.textContent = '휴대폰 번호를 적어 주세요.'; return; }
+      if (smsOn && !verified) { m.textContent = '휴대폰 인증을 마쳐 주세요. (인증번호 받기 → 확인)'; return; }
+      if (!verified) up.phone = pFmt($('ph').value); // 문자 인증 준비 전: 번호만 저장(인증 안 됨)
       if (needAgree) {
         var nk = $('nick').value.trim();
         if (nk.length < 2 || nk.length > 12) { m.textContent = '별명은 2~12자로 정해 주세요.'; return; }
