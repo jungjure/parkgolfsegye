@@ -154,6 +154,7 @@
       + '</div>';
     m.addEventListener('click', function(ev){ if (ev.target === m || ev.target.classList.contains('modal-x')) m.remove(); });
     document.body.appendChild(m);
+    if (window.PGS_AUTOLINK) PGS_AUTOLINK(m.querySelector('.modal-box'));
   }
 
   box.addEventListener('click', function(ev){

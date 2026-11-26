@@ -265,3 +265,51 @@
 
 // 바탕화면 설치 단추 (2026-11-27, assets/js/install.js)
 (function(){ if (document.getElementById('pgs-install-js') || /[?&]embed=1/.test(location.search)) return; var s = document.createElement('script'); s.id = 'pgs-install-js'; s.src = (document.body.getAttribute('data-root') || '') + 'assets/js/install.js?v=20261127a'; document.head.appendChild(s); })();
+
+// 글 속 인터넷 주소 -> 누르면 그 주소로 이동, 전화번호 -> 누르면 바로 전화 걸기 (2026-11-27 사용자 "기사에 url이 있는 것은 url연결", "기사에 전화번호있는 것은 전화가 바로 걸릴 수 있게 … 항상")
+// 대회 일정 자세히 보기 창(schedule.js)과 뉴스 기사 본문(news.js)에서 씀. 이미 링크인 글자는 건드리지 않음. 팩스 번호는 제외.
+(function(){
+  var URL_RE = /(?:https?:\/\/|www\.)[^\s<>"'\u3000가-힣]+/g;
+  var TEL_RE = /(?<![\d-])(?:0\d{1,3}[-.)]\s?\d{3,4}[-.]\d{4}|0\d{1,3}\s\d{3,4}\s\d{4}|01[016789]\d{7,8}|1[5-9]\d{2}-\d{4})(?![\d-])/g;
+  function trimUrl(u){
+    u = u.replace(/[.,;:!?。、]+$/, '');
+    while (/[)\]}>]$/.test(u)) {
+      var c = u.slice(-1), o = { ')': '(', ']': '[', '}': '{', '>': '<' }[c];
+      if (u.split(o).length >= u.split(c).length) break;
+      u = u.slice(0, -1).replace(/[.,;:!?]+$/, '');
+    }
+    return u;
+  }
+  window.PGS_AUTOLINK = function(el){
+    if (!el) return;
+    var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null), nodes = [], n;
+    while ((n = w.nextNode())) if (!n.parentElement.closest('a,button,script,style,textarea,input,select')) nodes.push(n);
+    nodes.forEach(function(node){
+      var text = node.nodeValue, marks = [], m;
+      URL_RE.lastIndex = 0;
+      while ((m = URL_RE.exec(text))) {
+        var u = trimUrl(m[0]); if (u.length < 8) continue;
+        marks.push({ s: m.index, e: m.index + u.length, href: /^www\./i.test(u) ? 'https://' + u : u, txt: u, cls: 'pgurl' });
+      }
+      TEL_RE.lastIndex = 0;
+      while ((m = TEL_RE.exec(text))) {
+        var s = m.index, e = s + m[0].length;
+        if (/(팩스|FAX|Fax|fax)\s*[:：)]?\s*(번호)?\s*[:：]?\s*$/.test(text.slice(Math.max(0, s - 10), s))) continue;
+        if (marks.some(function(k){ return s < k.e && e > k.s; })) continue;
+        marks.push({ s: s, e: e, href: 'tel:' + m[0].replace(/\D/g, ''), txt: m[0], cls: 'pgtel' });
+      }
+      if (!marks.length) return;
+      marks.sort(function(a, b){ return a.s - b.s; });
+      var f = document.createDocumentFragment(), last = 0;
+      marks.forEach(function(k){
+        if (k.s < last) return;
+        if (k.s > last) f.appendChild(document.createTextNode(text.slice(last, k.s)));
+        var a = document.createElement('a'); a.href = k.href; a.className = k.cls; a.textContent = k.txt;
+        if (k.cls === 'pgurl') { a.style.wordBreak = 'break-all'; a.title = '눌러서 이 주소로 이동'; } else a.title = '눌러서 전화 걸기';
+        f.appendChild(a); last = k.e;
+      });
+      if (last < text.length) f.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode.replaceChild(f, node);
+    });
+  };
+})();

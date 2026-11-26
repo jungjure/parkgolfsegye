@@ -126,6 +126,7 @@
     t.content.querySelectorAll('p,div,li').forEach(function(n){ if (!n.children.length && /band\.us\//.test(n.textContent) && n.textContent.length < 120) n.remove(); });
     el.appendChild(t.content);
     linkify(el);
+    if (window.PGS_AUTOLINK) PGS_AUTOLINK(el);   // 인터넷 주소·그 밖의 전화번호 모양도 연결
   }
 
   // 본문 속 구장 이름 -> 길안내(place.html), 전화번호 -> 전화 걸기
