@@ -48,9 +48,18 @@
     history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : ''));
   }
 
+  // 해외 장소는 구글 지도로 보여 줌 (2026-11-27 사용자 "해외는 구글지도를 연결해서 보여줘")
+  var ABROAD = /중국|일본|태국|베트남|하이난|웨이하이|오키나와|해외|필리핀|라오스|캄보디아|몽골|대만|타이완|말레이시아|인도네시아|싱가포르|괌|사이판|호주|뉴질랜드|미국|캐나다|하와이|홋카이도|후쿠오카|오사카|도쿄|규슈|큐슈|다낭|나트랑|하노이|호치민|푸꾸옥|파타야|방콕|치앙마이|나콘사완|칭다오|청도|상하이|베이징|대련|다롄|하얼빈|연태|옌타이|세부|클락|마닐라|비엔티안|울란바토르/;
+  function googleMap(place){
+    var parts = place.split(/\s*\/\s*/), q = parts.filter(function(s){ return ABROAD.test(s); })[0] || place;
+    q = q.replace(/\s*[(（][^)）]*(출발|집결|공항|터미널|이용|훼리|카운터)[^)）]*[)）]/g, '').replace(/\s*(출발|도착|일원|일대)\s*$/, '').trim();
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+  }
   function placeLinks(e){
     if (!e.place) return '';
-    if (/온라인|전화 ?접수|홈페이지|중국|일본|태국|베트남|하이난|웨이하이|오키나와|해외/.test(e.place)) return '<div class="ev-place">' + esc(e.place) + '</div>';
+    if (/온라인|전화 ?접수|홈페이지/.test(e.place)) return '<div class="ev-place">' + esc(e.place) + '</div>';
+    if (ABROAD.test(e.place)) return '<div class="ev-place">' + esc(e.place)
+      + ' <a class="mapbtn gg" href="' + esc(googleMap(e.place)) + '">구글 지도</a></div>';
     var m = e.place.match(/^(.+?)\s*\((.+)\)\s*$/);
     var vv = venueOf(e.place);
     var base = vv ? root + 'place.html?n=' + encodeURIComponent(vv.name) + '&lat=' + vv.lat + '&lng=' + vv.lng
@@ -80,7 +89,8 @@
   function norm(s){ return String(s || '').replace(/\s+/g, ''); }
   function venueOf(place){
     var p = norm(place), best = null;
-    VEN.forEach(function(v){ var n = norm(v.name); if (n.length >= 4 && p.indexOf(n) >= 0 && (!best || n.length > norm(best.name).length)) best = v; });
+    VEN.forEach(function(v){ var n = norm(v.name); if (n.replace(/(파크골프장|파크골프구장|파크골프|구장)$/, '').length < 2) return;   // '파크골프장'처럼 이름만 흔한 구장은 엉뚱한 곳으로 가므로 제외 (2026-11-27)
+      if (n.length >= 4 && p.indexOf(n) >= 0 && (!best || n.length > norm(best.name).length)) best = v; });
     return best;
   }
   function render(){
