@@ -249,7 +249,7 @@
         return '<div class="card"><b>' + title + '</b> <span class="muted small">' + note + '</span>' + (daily.length ? '<div class="vbars' + (cls ? ' ' + cls : '') + '" id="' + id + '">' + daily.map(function(d, i){ var dd = d.d.slice(8), lab = (i === 0 || dd === '01') ? (+d.d.slice(5, 7)) + '/' + (+dd) : String(+dd);
           return '<div class="vcol" style="min-width:' + bw + 'px" title="' + d.d + ' ' + title.replace('날짜별 ', '') + ' ' + d[key] + unit + '"><em>' + d[key] + '</em><i style="height:' + Math.max(2, Math.round(d[key] / mx * 150)) + 'px"></i><span>' + lab + '</span></div>'; }).join('') + '</div>' : '<p class="muted small">아직 기록이 없습니다.</p>') + '</div>';
       }
-      h += '<div class="grid2">' + vchart('vbars-pv', 'pv', '날짜별 페이지뷰', '누른 화면 수', '번', 'pv') + vchart('vbars', 'uv', '날짜별 실방문자', '한 사람이 그날 여러 번 들어와도 1명', '명', '') + '</div>';
+      h += '<div class="grid2 vgrid">' + vchart('vbars-pv', 'pv', '날짜별 페이지뷰', '누른 화면 수', '번', 'pv') + vchart('vbars', 'uv', '날짜별 실방문자', '한 사람이 그날 여러 번 들어와도 1명', '명', '') + '</div>';
       h += '<div class="grid2"><div class="card"><b>많이 본 화면</b> <span class="muted small">화면 열람 수</span><table class="stat-tbl">' + (s.pages || []).map(function(p){ return '<tr><td><a href="' + root.replace(/\/$/, '') + p.path + '">' + esc((p.title || p.path).replace(/ - 파크골프세계$/, '')) + '</a></td><td class="n">' + p.pv + '</td></tr>'; }).join('') + '</table></div>'
         + '<div class="card"><b>들어온 곳</b> <span class="muted small">방문 기준 (그날 처음 들어온 곳)</span><table class="stat-tbl">' + (s.refs || []).map(function(x){ return '<tr><td>' + esc(x.host) + '</td><td class="n">' + x.n + '</td></tr>'; }).join('') + '</table><b>기기</b> <span class="muted small">방문 기준</span><table class="stat-tbl">' + (s.devices || []).map(function(x){ return '<tr><td>' + esc(x.device) + '</td><td class="n">' + x.n + '</td></tr>'; }).join('') + '</table></div></div>';
       h += '<p class="muted small">방문 = 한 사람(기기)이 하루에 여러 번 들어와도 1번. 방문자 = 기간 중 같은 사람은 1명. 화면 열람 = 누른 화면 수.</p>';
@@ -259,7 +259,7 @@
         st.textContent = '.vbars{display:flex;align-items:flex-end;gap:4px;overflow-x:auto;padding:24px 2px 2px;margin-top:8px}'
           + '.vbars .vcol{flex:1 0 auto;display:flex;flex-direction:column;align-items:stretch;text-align:center}'
           + '.vbars .vcol em{font-style:normal;font-size:12px;line-height:16px;color:var(--text,#222);font-weight:600;white-space:nowrap;margin-bottom:3px}'
-          + '.vbars .vcol i{display:block;background:var(--main);border-radius:3px 3px 0 0}.vbars.pv .vcol i{opacity:.45}'
+          + '.vbars .vcol i{display:block;background:var(--main);border-radius:3px 3px 0 0}.vbars.pv .vcol i{opacity:.45}.vgrid{align-items:start}.vgrid>.card{margin:0}'
           + '.vbars .vcol span{font-size:11px;line-height:20px;color:var(--sub);border-top:1px solid var(--line);white-space:nowrap}';
         document.head.appendChild(st); }
       ['vbars', 'vbars-pv'].forEach(function(id){ var vb = document.getElementById(id); if (vb) vb.scrollLeft = vb.scrollWidth; }); // 가장 최근 날짜가 보이게
