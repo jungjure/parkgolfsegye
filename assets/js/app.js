@@ -248,3 +248,6 @@
   // 화면별 목록 불러오기 (Supabase 연결 뒤에 작동)
 
 })();
+
+// 간편 로그인 단추·지역 선택 안내 (2026-11-26, assets/js/social.js)
+(function(){ if (document.getElementById('pgs-social-js')) return; var s = document.createElement('script'); s.id = 'pgs-social-js'; s.src = (document.body.getAttribute('data-root') || '') + 'assets/js/social.js?v=20261126a'; document.head.appendChild(s); })();
