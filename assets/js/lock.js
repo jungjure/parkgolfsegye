@@ -5,7 +5,7 @@
    잠금을 풀려면 아래 LOCKED 를 false 로 바꾸고 robots.txt 를 원래대로 되돌립니다.
    불러오는 곳: config.js(홈페이지 모든 화면), nlwin.js(뉴스레터 화면). */
 (function(){
-  var LOCKED = true;
+  var LOCKED = false;  // 2026-11-26 잠금 해제 (사용자 "잠금 풀고 바로 진행", 네이버 검색 등록)
   if (window.__pgsLock) return; window.__pgsLock = 1;
   var SB_URL = 'https://rzteighnvqroxuqqwhov.supabase.co';
   var SB_KEY = 'sb_publishable_DV2c-2cLZQN3gdBzCKzHpg_VHyTMCtc';
