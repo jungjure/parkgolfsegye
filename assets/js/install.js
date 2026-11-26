@@ -28,7 +28,7 @@
   st.textContent = '.sl-r{justify-self:end;display:inline-flex;align-items:center;gap:6px}'
     + '.inst-pill{display:inline-flex;align-items:center;gap:5px;background:#fff;color:#0b4d32;border:2px solid #148a4a;font:inherit;font-size:15.5px;font-weight:800;line-height:1;padding:5px 12px 5px 10px;border-radius:999px;cursor:pointer}'
     + '.inst-pill:hover{background:#e8f4ee}'
-    + '@media (max-width:640px){.sl-r{order:3}.inst-pill{font-size:14px;padding:4px 10px 4px 8px}}'
+    + '@media (max-width:640px){.sl-r{order:3}.inst-pill{order:4;font-size:14px;padding:4px 10px 4px 8px}}'
     + '.inst-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}'
     + '.inst-box{background:#fff;border-radius:14px;max-width:420px;width:100%;padding:22px 20px 18px;font:inherit;color:#222;box-shadow:0 10px 30px rgba(0,0,0,.25)}'
     + '.inst-box h3{margin:0 0 6px;font-size:19px;color:#0b4d32;display:flex;align-items:center;gap:10px}.inst-box h3 img{width:40px;height:40px;border-radius:9px;border:1px solid #e3e3e3}'
