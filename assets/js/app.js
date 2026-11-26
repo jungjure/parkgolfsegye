@@ -172,10 +172,10 @@
     var md = document.querySelector('meta[name="description"]'), desc = '';
     var body = document.querySelector('main #post-body, main #article .art-body, main .art-body');
     if (body) desc = body.textContent.replace(/\s+/g, ' ').trim().slice(0, 90);
-    if (!desc) desc = (C.SITE_URL || 'https://parkgolfsegye.co.kr').replace(/^https?:\/\//, '').replace(/\/$/, ''); // 2026-11-26 사용자: 카톡 공유 설명은 parkgolfsegye.co.kr 만
+    // 2026-11-26 사용자: 기사 아닌 화면은 카톡 공유에 설명 글을 넣지 않음(주소는 그림 아래 띠에 있음)
     var im = document.querySelector('main #post-body img, main .art-body img, main .art-imgs img');
-    var img = im && /^https:/.test(im.src) ? im.src : (C.SITE_URL || location.origin) + '/assets/img/og.jpg';
-    return { title: title, desc: desc || 'parkgolfsegye.co.kr', img: img, og: img.indexOf('/assets/img/og.jpg') > -1, url: location.href.split('#')[0] };
+    var img = im && /^https:/.test(im.src) ? im.src : (C.SITE_URL || location.origin) + '/assets/img/share.jpg';
+    return { title: title, desc: desc, img: img, og: img.indexOf('/assets/img/share.jpg') > -1, url: location.href.split('#')[0] };
   }
   function toast(t){
     var el = document.getElementById('pgs-toast');
@@ -192,7 +192,7 @@
     if (!(window.Kakao && Kakao.isInitialized && Kakao.isInitialized() && Kakao.Share)) { loadKakao(); copyUrl(i.url); return; }
     try {
       Kakao.Share.sendDefault({ objectType: 'feed',
-        content: { title: i.title, description: i.desc, imageUrl: i.img, imageWidth: i.og ? 1200 : undefined, imageHeight: i.og ? 630 : undefined, link: { mobileWebUrl: i.url, webUrl: i.url } }, // 대표 이미지(1200x630)는 잘리지 않게 크기를 알려 줌
+        content: { title: i.title, description: i.desc || undefined, imageUrl: i.img, imageWidth: i.og ? 1080 : undefined, imageHeight: i.og ? 1080 : undefined, link: { mobileWebUrl: i.url, webUrl: i.url } }, // 카톡 공유용 정사각 그림(1080x1080, 로고·이름·주소 띠)이 카드의 약 2/3를 차지
         buttons: [{ title: '자세히 보기', link: { mobileWebUrl: i.url, webUrl: i.url } }] });
     } catch (e) { copyUrl(i.url); }
   }
