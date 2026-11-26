@@ -174,7 +174,7 @@
     if (page === 'article') key = 'news';
     if (page === 'post') { var cat = document.querySelector('main .nw-cat'); key = cat && /자유/.test(cat.textContent) ? 'board' : 'column'; }
     var IMG_KEYS = /^(schedule|venues|news|course|column|board|join|talk)$/;
-    var img = (C.SITE_URL || location.origin) + '/assets/img/' + (IMG_KEYS.test(key) ? 'share_' + key : 'share') + '.jpg';
+    var img = (C.SITE_URL || location.origin) + '/assets/img/' + (IMG_KEYS.test(key) ? 'share_' + key : 'share') + '.jpg?v=2'; // 그림을 바꾸면 v 숫자를 올려 카톡 그림 캐시를 새로 받게 함
     // 그림 아래 한 줄 설명 (2026-11-26 사용자 "하단에는 글 하나를 기술해줘"): 메뉴별 소개, 기사·글은 본문 첫 부분
     var LINE = { home: '파크골프 대회 일정·구장 정보·소식을 한곳에서', schedule: '전국 파크골프 대회·접수 일정을 한눈에', venues: '전국 파크골프장 위치와 이용 정보',
       news: '오늘의 파크골프 소식', course: '처음 시작하는 분을 위한 파크골프 입문강좌', column: '독자가 쓰는 파크골프 이야기', board: '파크골프 동호인 자유게시판',
