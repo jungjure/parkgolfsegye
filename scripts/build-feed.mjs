@@ -36,8 +36,7 @@ const items = list.slice(0, 50).map(a => {
       <guid isPermaLink="true">${esc(link)}</guid>
       <description>${esc(a.summary || a.title)}</description>
       <category>${esc(a.category || '뉴스')}</category>
-      <pubDate>${new Date(a.published_at).toUTCString()}</pubDate>${a.cover_url ? `
-      <enclosure url="${esc(a.cover_url)}" type="image/jpeg" length="0"/>` : ''}
+      <pubDate>${new Date(a.published_at).toUTCString()}</pubDate>
     </item>`;
 }).join('\n');
 
