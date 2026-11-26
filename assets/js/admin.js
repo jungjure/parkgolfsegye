@@ -240,11 +240,22 @@
       var s = r.data, daily = s.daily || [], max = Math.max.apply(null, daily.map(function(d){ return d.pv; }).concat([1]));
       var h = '<div class="chips">' + [[7,'7일'],[30,'30일'],[90,'90일']].map(function(d){ return '<button data-days="' + d[0] + '"' + (sdays === d[0] ? ' class="on"' : '') + '>' + d[1] + '</button>'; }).join('') + '</div>';
       h += '<div class="adm-cards"><div class="adm-card"><span>방문(화면 열람)</span><b>' + s.total.pv + '</b></div><div class="adm-card"><span>방문자(기기 기준)</span><b>' + s.total.uv + '</b></div></div>';
-      h += '<div class="card"><b>날짜별 방문</b>' + (daily.length ? '<div class="bars">' + daily.map(function(d){ return '<div class="bar" style="height:' + Math.max(2, d.pv / max * 100) + '%" title="' + d.d + ' 방문 ' + d.pv + ', 방문자 ' + d.uv + '"><span>' + d.pv + '</span></div>'; }).join('') + '</div><div class="bar-labels">' + daily.map(function(d){ return '<span>' + d.d.slice(8) + '</span>'; }).join('') + '</div>' : '<p class="muted small">아직 기록이 없습니다.</p>') + '</div>';
+      // 2026-11-27 사용자 "날짜별 방문 챠트 숫자 다 보이게": 막대 위 숫자를 위 여백 안에 두고, 칸 너비를 숫자 자릿수에 맞춰 겹치지 않게, 날짜를 막대와 같은 칸에 넣어 같이 넘어가게
+      var bw = Math.max(26, String(max).length * 9 + 10);
+      h += '<div class="card"><b>날짜별 방문</b>' + (daily.length ? '<div class="vbars" id="vbars">' + daily.map(function(d, i){ var dd = d.d.slice(8), lab = (i === 0 || dd === '01') ? (+d.d.slice(5, 7)) + '/' + (+dd) : String(+dd);
+          return '<div class="vcol" style="min-width:' + bw + 'px" title="' + d.d + ' 방문 ' + d.pv + ', 방문자 ' + d.uv + '"><em>' + d.pv + '</em><i style="height:' + Math.max(2, Math.round(d.pv / max * 150)) + 'px"></i><span>' + lab + '</span></div>'; }).join('') + '</div>' : '<p class="muted small">아직 기록이 없습니다.</p>') + '</div>';
       h += '<div class="grid2"><div class="card"><b>많이 본 화면</b><table class="stat-tbl">' + (s.pages || []).map(function(p){ return '<tr><td><a href="' + root.replace(/\/$/, '') + p.path + '">' + esc((p.title || p.path).replace(/ - 파크골프세계$/, '')) + '</a></td><td class="n">' + p.pv + '</td></tr>'; }).join('') + '</table></div>'
         + '<div class="card"><b>들어온 곳</b><table class="stat-tbl">' + (s.refs || []).map(function(x){ return '<tr><td>' + esc(x.host) + '</td><td class="n">' + x.n + '</td></tr>'; }).join('') + '</table><b>기기</b><table class="stat-tbl">' + (s.devices || []).map(function(x){ return '<tr><td>' + esc(x.device) + '</td><td class="n">' + x.n + '</td></tr>'; }).join('') + '</table></div></div>';
       h += '<p class="muted small">IP 주소와 회원 정보는 남기지 않습니다. 방문 기록은 1년 뒤 자동으로 지워집니다.</p>';
       body().innerHTML = h;
+      if (!document.getElementById('vbars-css')) { var st = document.createElement('style'); st.id = 'vbars-css';
+        st.textContent = '.vbars{display:flex;align-items:flex-end;gap:4px;overflow-x:auto;padding:24px 2px 2px;margin-top:8px}'
+          + '.vbars .vcol{flex:1 0 auto;display:flex;flex-direction:column;align-items:stretch;text-align:center}'
+          + '.vbars .vcol em{font-style:normal;font-size:12px;line-height:16px;color:var(--text,#222);font-weight:600;white-space:nowrap;margin-bottom:3px}'
+          + '.vbars .vcol i{display:block;background:var(--main);border-radius:3px 3px 0 0}'
+          + '.vbars .vcol span{font-size:11px;line-height:20px;color:var(--sub);border-top:1px solid var(--line);white-space:nowrap}';
+        document.head.appendChild(st); }
+      var vb = document.getElementById('vbars'); if (vb) vb.scrollLeft = vb.scrollWidth; // 가장 최근 날짜가 보이게
     });
   }
 
