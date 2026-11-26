@@ -262,3 +262,6 @@
 
 // 간편 로그인 단추·지역 선택 안내 (2026-11-26, assets/js/social.js)
 (function(){ if (document.getElementById('pgs-social-js')) return; var s = document.createElement('script'); s.id = 'pgs-social-js'; s.src = (document.body.getAttribute('data-root') || '') + 'assets/js/social.js?v=20261126a'; document.head.appendChild(s); })();
+
+// 바탕화면 설치 단추 (2026-11-27, assets/js/install.js)
+(function(){ if (document.getElementById('pgs-install-js') || /[?&]embed=1/.test(location.search)) return; var s = document.createElement('script'); s.id = 'pgs-install-js'; s.src = (document.body.getAttribute('data-root') || '') + 'assets/js/install.js?v=20261127a'; document.head.appendChild(s); })();
