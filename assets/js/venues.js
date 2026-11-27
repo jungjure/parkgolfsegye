@@ -41,7 +41,7 @@
     h += list.length ? '<div class="evs">' + list.slice(0, 300).map(card).join('') + '</div>' : '<p class="muted card">찾는 구장이 없습니다.</p>';
     if (list.length > 300) h += '<p class="muted small">300곳까지 보여 드립니다. 지역을 골라 주세요.</p>';
     box.innerHTML = h;
-    var p = new URLSearchParams(); if (st.s) p.set('s', st.s); if (st.g) p.set('g', st.g); if (k) p.set('q', k);
+    var p = new URLSearchParams(); if (new URLSearchParams(location.search).get('t') === 'near') p.set('t', 'near'); if (st.s) p.set('s', st.s); if (st.g) p.set('g', st.g); if (k) p.set('q', k);
     history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : ''));
   }
   box.addEventListener('click', function(e){
