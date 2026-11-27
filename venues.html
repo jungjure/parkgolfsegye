@@ -19,13 +19,22 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/css/style.css?v=20261125s">
+<style>.vn-frame{display:block;width:100%;border:0;min-height:600px;background:transparent;border-radius:10px}</style>
 </head>
 <body data-page="venues" data-root="">
 <div id="site-header"></div>
 <main class="wrap">
   <h1>구장 정보</h1>
-  <p class="muted small">전국 파크골프장 정보입니다. 장소의 네이버·카카오 버튼을 누르면 자동차 길안내가 열립니다.</p>
-  <div id="venues"></div>
+  <div class="sch-tabs vn-tabs" id="vnTabs"><button type="button" data-t="" class="on">전국 구장</button><button type="button" data-t="near">인근지역검색</button></div>
+  <section id="vnAll">
+    <p class="muted small">전국 파크골프장 정보입니다. 장소의 네이버·카카오 버튼을 누르면 자동차 길안내가 열립니다.</p>
+    <div id="venues"></div>
+  </section>
+  <section id="vnNear" hidden>
+    <p class="muted small">기준 도시에서 가까운 파크골프장을 거리순으로 모았습니다. 구장 이름을 누르면 자동차 길안내가 열립니다.</p>
+    <div class="chips reg-chips" id="vnNearChips"><button type="button" class="on" data-near="daejeon">대전 1시간 거리</button></div>
+    <iframe class="vn-frame" id="vnF" title="대전광역시에서 1시간 거리의 파크골프장" data-src="assets/venue_daejeon.html?v=20261127a" scrolling="no"></iframe>
+  </section>
 </main>
 <div id="site-footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -34,6 +43,31 @@
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/app.js?v=20261127i"></script>
 <script src="assets/js/navi.js?v=20261125s"></script>
-<script src="assets/js/venues.js?v=20261124h"></script>
+<script src="assets/js/venues.js?v=20261127n"></script>
+<script>
+/* 구장 정보 > 인근지역검색 (2026-11-27, 사용자 "이 게시물을 … 구장정보에 별도로 넣어줘. 인근지역검색으로")
+   - 전국 구장 / 인근지역검색 탭. 인근지역검색은 지역별 목록(assets/venue_*.html)을 같은 화면 안에 보여 주고, 높이는 내용에 맞춰 늘어남
+   - 주소 ?t=near 이면 처음부터 인근지역검색 탭 */
+(function(){
+  var NEAR = { daejeon: { src: 'assets/venue_daejeon.html?v=20261127a', title: '대전광역시에서 1시간 거리의 파크골프장' } };
+  var tabs = document.getElementById('vnTabs'), all = document.getElementById('vnAll'), near = document.getElementById('vnNear'), f = document.getElementById('vnF');
+  function fit(){ try { var d = f.contentDocument; if (!d || !d.documentElement) return; f.style.height = '0px'; f.style.height = Math.max(d.documentElement.scrollHeight, d.body ? d.body.scrollHeight : 0) + 'px'; } catch (e) {} }
+  var inited = null;
+  function init(){ fit(); try { var d = f.contentDocument; if (inited !== d) { inited = d; new ResizeObserver(fit).observe(d.body); d.addEventListener('click', function(){ setTimeout(fit, 50); }); } } catch (e) {} setTimeout(fit, 400); setTimeout(fit, 1500); setTimeout(fit, 4000); }
+  f.addEventListener('load', init);
+  addEventListener('resize', fit);
+  function load(key){ var n = NEAR[key] || NEAR.daejeon; if (f.getAttribute('src') !== n.src) { f.title = n.title; f.setAttribute('src', n.src); } else fit(); }
+  function show(t, push){
+    var isNear = t === 'near';
+    all.hidden = isNear; near.hidden = !isNear;
+    tabs.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', (b.getAttribute('data-t') || '') === (isNear ? 'near' : '')); });
+    if (isNear) load((near.querySelector('[data-near].on') || {}).getAttribute ? near.querySelector('[data-near].on').getAttribute('data-near') : 'daejeon');
+    if (push) { var p = new URLSearchParams(location.search); if (isNear) p.set('t', 'near'); else p.delete('t'); history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : '')); }
+  }
+  tabs.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) show(b.getAttribute('data-t') || '', true); });
+  near.addEventListener('click', function(e){ var b = e.target.closest('[data-near]'); if (!b) return; near.querySelectorAll('[data-near]').forEach(function(x){ x.classList.toggle('on', x === b); }); load(b.getAttribute('data-near')); });
+  show(new URLSearchParams(location.search).get('t') === 'near' ? 'near' : '', false);
+})();
+</script>
 </body>
 </html>
