@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>전체 검색 - 파크골프세계</title>
+<meta name="description" content="파크골프세계 전체 검색: 대회 일정, 구장 정보, 뉴스, 맛집, 입문강좌, 독자칼럼, 자유게시판, 조인게시판">
+<meta name="robots" content="noindex,follow">
+<meta property="og:site_name" content="파크골프세계">
+<meta property="og:type" content="website">
+<meta property="og:title" content="전체 검색 - 파크골프세계">
+<meta property="og:url" content="https://parkgolfsegye.co.kr/search.html">
+<meta property="og:image" content="https://parkgolfsegye.co.kr/assets/img/og_link.jpg?v=1">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/css/style.css?v=20261127e">
+<style>
+.srch-form{display:flex;gap:8px;margin:0 0 14px}
+.srch-form input{flex:1;min-width:0;padding:11px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:16px}
+.srch-form button{padding:0 18px;border:0;border-radius:10px;background:var(--main);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.srch-sum{margin:0 0 10px;font-size:16px}
+.srch-chips a{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;color:var(--text);font-size:14px}
+.srch-sec{margin:18px 0}
+.srch-list{list-style:none;margin:0;padding:0;background:#fff;border:1px solid var(--line);border-radius:10px}
+.srch-list li{border-bottom:1px solid var(--line)}
+.srch-list li:last-child{border-bottom:0}
+.srch-list a{display:flex;gap:12px;padding:12px 14px;color:var(--text);align-items:flex-start}
+.srch-list a:hover strong{color:var(--main)}
+.srch-list img{width:120px;aspect-ratio:16/9;object-fit:cover;border-radius:6px;flex:none;background:#ddd}
+.srch-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.srch-txt strong{line-height:1.45}
+.srch-meta{color:var(--sub);font-size:13px}
+.srch-sn{color:#444;font-size:14px;line-height:1.5}
+.srch-list mark{background:#fff1a8;color:inherit;padding:0 1px;border-radius:2px}
+.srch-btn{margin-top:8px}
+@media (max-width:600px){.srch-list img{width:90px}}
+</style>
+</head>
+<body data-page="search" data-root="">
+<div id="site-header"></div>
+<main class="wrap">
+  <h1>전체 검색</h1>
+  <form class="srch-form" action="search.html" method="get" role="search"><input id="sq" type="search" name="q" maxlength="40" placeholder="대회, 구장, 지역, 맛집, 강좌 등 찾을 낱말" aria-label="전체 검색어"><button type="submit">검색</button></form>
+  <div id="search"></div>
+</main>
+<div id="site-footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js?v=20261124m"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/app.js?v=20261127s"></script>
+<script src="assets/js/search.js?v=20261127a"></script>
+</body>
+</html>
