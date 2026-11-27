@@ -85,6 +85,7 @@
   }
 
   var rows = [], VEN = [];
+  var OPEN = compact ? null : q.get('e');   // search.html 등에서 schedule.html?d=날짜&e=일정번호 로 오면 그 일정 자세히 보기 창을 바로 엶 (2026-11-27)
   // 구장 표의 좌표: 장소 글자에 구장 이름이 들어 있으면 그 좌표로 길안내
   function norm(s){ return String(s || '').replace(/\s+/g, ''); }
   function venueOf(place){
@@ -134,6 +135,7 @@
     }
     box.innerHTML = h;
     saveUrl();
+    if (OPEN) { var oe = rows.filter(function(x){ return String(x.id) === String(OPEN); })[0]; OPEN = null; if (oe) popup(oe); }
   }
 
   function load(){

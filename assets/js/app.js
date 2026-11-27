@@ -38,7 +38,7 @@
     + '<div class="menu-info"><time>' + todayTxt + '</time>'
     + '<a class="mi-x" href="https://band.us/band/102127754">네이버 밴드</a>'
     + '<a class="mi-x" href="tel:' + String((C.COMPANY || {}).tel || '').replace(/[^0-9]/g, '') + '">' + esc((C.COMPANY || {}).tel || '') + '</a>'
-    + '<form class="msearch" action="' + root + 'news.html" method="get" role="search"><input type="search" name="q" placeholder="기사 검색" aria-label="기사 검색어" maxlength="40" value="' + (page === 'news' ? esc(new URLSearchParams(location.search).get('q') || '') : '') + '">'
+    + '<form class="msearch" action="' + root + 'search.html" method="get" role="search"><input type="search" name="q" placeholder="전체 검색" aria-label="전체 검색어 (대회 일정·구장·뉴스·맛집·강좌·게시판 모두)" maxlength="40" value="' + (page === 'search' || page === 'news' ? esc(new URLSearchParams(location.search).get('q') || '') : '') + '">'
     + '<button type="submit" aria-label="검색"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button></form>'
     + '<a class="nl-btn" id="nl-btn" href="' + root + 'signup.html">뉴스레터 받기</a>'
     + '</div></header>';
