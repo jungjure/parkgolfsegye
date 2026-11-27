@@ -77,8 +77,8 @@
           var href = it.href || ('https://youtu.be/' + it.yt);
           return '<li' + (i >= 5 ? ' class="srch-more" hidden' : '') + '><a href="' + esc(href) + '">'
             + (it.yt ? '<img src="https://i.ytimg.com/vi/' + esc(it.yt) + '/mqdefault.jpg" alt="" loading="lazy">' : '')
-            + '<span class="srch-txt"><span class="tag">' + esc(it.tag) + '</span> <strong>' + hl(it.title || '(제목 없음)') + '</strong>'
-            + (it.meta ? '<span class="srch-meta">' + hl(it.meta) + '</span>' : '')
+            + '<span class="srch-txt"><strong>' + hl(it.title || '(제목 없음)') + '</strong>'   // 초록 종류 표시(태그)는 없앰 (2026-11-27 사용자 "초록색 바는 없애줘"), 종류는 회색 글자로
+            + '<span class="srch-meta">' + esc(it.tag) + (it.meta ? ' · ' + hl(it.meta) : '') + '</span>'
             + (it.sn ? '<span class="srch-sn">' + it.sn + '</span>' : '') + '</span></a></li>'; }).join('') + '</ul>'
         + (s.items.length > 5 ? '<button class="btn line srch-btn" data-sec="' + s.id + '">' + s.name + ' ' + (s.items.length - 5) + '건 더 보기</button>' : '')
         + '</section>';
