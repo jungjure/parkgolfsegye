@@ -19,6 +19,7 @@
     + '.tkr-it:before{content:"";width:5px;height:5px;border-radius:50%;background:#9cc8b0;margin-right:4px}'
     + '.tkr-it b{color:#148a4a;font-weight:800;font-size:14px}'
     + '.tkr-it:hover{color:#0b4d32;text-decoration:underline}'
+    + '.tkr-it.yt b{color:#d4201b}'
     + '.tkr-it .tm{color:#888;font-weight:500;font-size:13.5px}'
     + '@keyframes tkr-mv{from{transform:translateX(0)}to{transform:translateX(-50%)}}'
     + '@media (max-width:640px){.tkr-in{padding:0 10px;height:42px;gap:8px}.tkr-lb{font-size:13.5px;padding:6px 10px}.tkr-it{font-size:15px;padding-right:20px}.tkr-it .tm{display:none}}';
@@ -36,19 +37,26 @@
   function hm(iso){ var d = new Date(new Date(iso).getTime() + 9 * 3600000); return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); }
   function md(iso){ var d = new Date(new Date(iso).getTime() + 9 * 3600000); return (d.getUTCMonth() + 1) + '/' + d.getUTCDate(); }
 
-  function q(){ return sb.from('articles').select('id,title,category,created_at').eq('is_published', true).order('created_at', { ascending: false }); }
-  q().gte('created_at', day0).limit(30).then(function(r){
-    var rows = (r && r.data) || [];
+  // 글과 영상을 함께 받아 시각 순서(최근 것 먼저)로 섞음. 영상은 유튜브로 같은 창에서 이동.
+  function arts(){ return sb.from('articles').select('id,title,category,created_at').eq('is_published', true).order('created_at', { ascending: false }); }
+  function vids(){ return sb.from('yt_videos').select('video_id,title,published_at').order('published_at', { ascending: false }); }
+  function mix(a, v){
+    var o = ((a && a.data) || []).map(function(x){ return { t: x.created_at, cat: x.category || '뉴스', title: x.title, href: root + 'article.html?id=' + encodeURIComponent(x.id) }; })
+      .concat(((v && v.data) || []).map(function(x){ return { t: x.published_at, cat: '유튜브', yt: 1, title: x.title, href: 'https://www.youtube.com/watch?v=' + encodeURIComponent(x.video_id) }; }));
+    return o.sort(function(p, q){ return new Date(q.t) - new Date(p.t); });
+  }
+  Promise.all([arts().gte('created_at', day0).limit(30), vids().gte('published_at', day0).limit(30)]).then(function(r){
+    var rows = mix(r[0], r[1]);
     if (rows.length) { lb.innerHTML = '오늘의 소식 <i>' + rows.length + '건</i>'; return draw(rows, true); }
     lb.textContent = '최근 소식';
-    q().limit(5).then(function(r2){ draw((r2 && r2.data) || [], false); });
+    Promise.all([arts().limit(5), vids().limit(3)]).then(function(r2){ draw(mix(r2[0], r2[1]).slice(0, 6), false); });
   });
 
   function draw(rows, isToday){
     if (!rows.length) { bar.parentNode.removeChild(bar); return; }
     var unit = rows.map(function(a){
-      return '<a class="tkr-it" href="' + root + 'article.html?id=' + encodeURIComponent(a.id) + '"><b>[' + esc(a.category || '뉴스') + ']</b>' + esc(a.title)
-        + '<span class="tm">' + (isToday ? hm(a.created_at) : md(a.created_at)) + '</span></a>';
+      return '<a class="tkr-it' + (a.yt ? ' yt' : '') + '" href="' + esc(a.href) + '"><b>[' + esc(a.cat) + ']</b>' + esc(a.title)
+        + '<span class="tm">' + (isToday ? hm(a.t) : md(a.t)) + '</span></a>';
     }).join('');
     tr.innerHTML = unit;
     var w = tr.scrollWidth || 1, n = Math.max(1, Math.ceil(vp.clientWidth / w));
