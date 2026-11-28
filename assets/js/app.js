@@ -266,6 +266,9 @@
 // 바탕화면 설치 단추 (2026-11-27, assets/js/install.js)
 (function(){ if (document.getElementById('pgs-install-js') || /[?&]embed=1/.test(location.search)) return; var s = document.createElement('script'); s.id = 'pgs-install-js'; s.src = (document.body.getAttribute('data-root') || '') + 'assets/js/install.js?v=20261127a'; document.head.appendChild(s); })();
 
+// 오늘의 소식 띠: 메뉴 아래 한 줄로 오늘 올라온 글이 흘러감 (2026-11-28, assets/js/ticker.js)
+(function(){ if (document.getElementById('pgs-ticker-js') || /[?&]embed=1/.test(location.search)) return; var s = document.createElement('script'); s.id = 'pgs-ticker-js'; s.src = (document.body.getAttribute('data-root') || '') + 'assets/js/ticker.js?v=20261128a'; document.head.appendChild(s); })();
+
 // 글 속 인터넷 주소 -> 누르면 그 주소로 이동, 전화번호 -> 누르면 바로 전화 걸기 (2026-11-27 사용자 "기사에 url이 있는 것은 url연결", "기사에 전화번호있는 것은 전화가 바로 걸릴 수 있게 … 항상")
 // 대회 일정 자세히 보기 창(schedule.js)과 뉴스 기사 본문(news.js)에서 씀. 이미 링크인 글자는 건드리지 않음. 팩스 번호는 제외.
 (function(){
