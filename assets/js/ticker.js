@@ -10,8 +10,6 @@
   var st = document.createElement('style');
   st.textContent = '.tkr{background:#fff;border-bottom:1px solid #d9e4dd}'
     + '.tkr-in{max-width:1080px;margin:0 auto;padding:0 16px;height:46px;display:flex;align-items:center;gap:12px}'
-    + '.tkr-lb{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:#148a4a;color:#fff;font-size:15px;font-weight:800;line-height:1;padding:7px 12px;border-radius:999px;white-space:nowrap}'
-    + '.tkr-lb i{font-style:normal;background:#fff;color:#148a4a;font-size:12.5px;font-weight:800;border-radius:999px;padding:2px 7px}'
     + '.tkr-vp{flex:1;min-width:0;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}'
     + '.tkr-tr{display:inline-flex;white-space:nowrap;will-change:transform;animation:tkr-mv var(--tkr-d,40s) linear infinite}'
     + '.tkr-vp:hover .tkr-tr,.tkr-vp:focus-within .tkr-tr{animation-play-state:paused}'
@@ -23,14 +21,14 @@
     + '.tkr-it.col b{color:#8a4b14}'
     + '.tkr-it .tm{color:#888;font-weight:500;font-size:13.5px}'
     + '@keyframes tkr-mv{from{transform:translateX(0)}to{transform:translateX(-50%)}}'
-    + '@media (max-width:640px){.tkr-in{padding:0 10px;height:42px;gap:8px}.tkr-lb{font-size:13.5px;padding:6px 10px}.tkr-it{font-size:15px;padding-right:20px}.tkr-it .tm{display:none}}';
+    + '@media (max-width:640px){.tkr-in{padding:0 10px;height:42px;gap:8px}.tkr-it{font-size:15px;padding-right:20px}.tkr-it .tm{display:none}}';
   document.head.appendChild(st);
 
   var bar = document.createElement('div');
   bar.className = 'tkr'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', '오늘의 소식');
-  bar.innerHTML = '<div class="tkr-in"><span class="tkr-lb">오늘의 소식</span><div class="tkr-vp"><div class="tkr-tr"></div></div></div>';
+  bar.innerHTML = '<div class="tkr-in"><div class="tkr-vp"><div class="tkr-tr"></div></div></div>';
   hdr.parentNode.insertBefore(bar, hdr.nextSibling);
-  var lb = bar.querySelector('.tkr-lb'), vp = bar.querySelector('.tkr-vp'), tr = bar.querySelector('.tkr-tr');
+  var vp = bar.querySelector('.tkr-vp'), tr = bar.querySelector('.tkr-tr');
 
   // 오늘 0시(한국 시각)
   var k = new Date(Date.now() + 9 * 3600000);
@@ -50,8 +48,7 @@
   }
   Promise.all([arts().gte('created_at', day0).limit(30), vids().gte('published_at', day0).limit(30), cols().gte('created_at', day0).limit(30)]).then(function(r){
     var rows = mix(r[0], r[1], r[2]);
-    if (rows.length) { lb.innerHTML = '오늘의 소식 <i>' + rows.length + '건</i>'; return draw(rows, true); }
-    lb.textContent = '최근 소식';
+    if (rows.length) return draw(rows, true);   // 2026-11-28 사용자 "오늘의 소식 9건은 나오지 않게 해줘": 왼쪽 이름표(오늘의 소식 N건) 없앰
     Promise.all([arts().limit(5), vids().limit(3), cols().limit(2)]).then(function(r2){ draw(mix(r2[0], r2[1], r2[2]).slice(0, 8), false); });
   });
 
